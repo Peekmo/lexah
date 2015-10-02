@@ -10,7 +10,7 @@ class SemicolonTranspiler implements Transpiler {
   public function tokens() : Array<String> {
     return [
       ")", "}", ";",
-      "(:", ":)",
+      "<:", ":>",
       "@", "//", "/*", "/*", "\\\"", "\"",
       "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "<", ">", "~",
       "if", "for", "while", "else", "try", "catch"
@@ -104,10 +104,10 @@ class SemicolonTranspiler implements Transpiler {
         if (!handle.safeis("else") && !handle.safeis("catch")) {
           handle.increment();
         }
-      } else if (handle.is("(:")) {
+      } else if (handle.is("{")) {
         handle.remove();
         handle.insert("<");
-        handle.next(":)");
+        handle.next("}");
         handle.remove();
         handle.insert(">");
         handle.increment();
