@@ -14,9 +14,6 @@ def main(): Void
     @my_method(my_array)
 end
 
---*
-  Multiline comment
-*--
 @:[static, public]
 def my_method(?params: Array<String>): Bool
     params.each do |var|

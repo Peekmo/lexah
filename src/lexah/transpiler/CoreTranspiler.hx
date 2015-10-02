@@ -36,10 +36,10 @@ class CoreTranspiler implements Transpiler {
       "=>",
 
       // Standard keywords
-      "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":",
+      "@:[", "]", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":",
 
-      // Raxe keywords
-      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do",
+      // Lexah keywords
+      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts",
 
       // Haxe keywords
       "using", "inline", "typedef", "try", "catch", //"//", "import", "var", "function",
@@ -102,6 +102,38 @@ class CoreTranspiler implements Transpiler {
           handle.increment();
         }
       }
+      else if (handle.is("@:[")) {
+        handle.remove();
+        var startPosition = handle.position;
+        handle.increment();
+
+        handle.next("]");
+        var finalPosition = handle.position;
+        handle.position = startPosition;
+
+        while (true) {
+          if (handle.position > finalPosition) {
+            handle.prev("]");
+            handle.remove();
+            handle.nextToken();
+            break;
+          } else if (!handle.next(",")) {
+            handle.next("]");
+            handle.remove();
+            handle.nextToken();
+            break;
+          }
+
+          handle.remove();
+          handle.increment();
+        }
+
+        if (handle.is("\n")) {
+          handle.remove();
+          handle.insert(" ");
+          handle.increment();
+        }
+      }
       // Skip compiler defines
       else if (handle.is("#") || handle.is("@")) {
         handle.next("\n");
@@ -150,6 +182,11 @@ class CoreTranspiler implements Transpiler {
 
         handle.increment();
         handle.insert("new ");
+        handle.increment();
+      }
+      else if (handle.safeis("puts")) {
+        handle.remove();
+        handle.insert("trace");
         handle.increment();
       }
       else if (handle.safeis("try")) {
