@@ -112,20 +112,21 @@ class CoreTranspiler implements Transpiler {
         handle.position = startPosition;
 
         while (true) {
-          if (handle.position > finalPosition) {
-            handle.prev("]");
-            handle.remove();
-            handle.nextToken();
-            break;
-          } else if (!handle.next(",")) {
+          if (!handle.next(",")) {
             handle.next("]");
             handle.remove();
             handle.nextToken();
             break;
           }
 
+          if (handle.position > finalPosition) {
+            handle.prev("]");
+            handle.remove();
+            handle.nextToken();
+            break;
+          }
+
           handle.remove();
-          handle.increment();
         }
 
         if (handle.is("\n")) {
@@ -255,28 +256,14 @@ class CoreTranspiler implements Transpiler {
           safeNextToken(handle);
         }
 
-        var insertDynamic = true;
-
         if (handle.safeis("new")) {
-          insertDynamic = false;
           handle.increment();
           handle.nextToken();
         }
 
-        insertDynamic = insertDynamic && !script;
-
-        if (fullyFixed || isFixed) {
-          insertDynamic = false;
-        }
-
         if (handle.is("(")) {
           handle.position = position;
-
-          if (insertDynamic) {
-            handle.insert("dynamic function");
-          } else {
-            handle.insert("function");
-          }
+          handle.insert("function");
 
           consumeCurlys(handle);
           handle.next("\n");
