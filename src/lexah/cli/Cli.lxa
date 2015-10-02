@@ -1,0 +1,44 @@
+require "mcli/CommandLine"
+require "sys/FileSystem"
+require "lexah/tools/Error"
+
+class self < CommandLine
+
+const ERROR_TYPE = "transpile_error"
+
+--*
+    Source directory or file
+    @alias s
+*--
+@:[public]
+var src: String
+
+--*
+    Destination directory or file
+    @alias d
+*--
+@:[public]
+var dest: String
+
+--*
+    Show this message
+    @alias h
+*--
+@:[public]
+def help
+    Sys.println(@showUsage())
+    Sys.exit(0)
+end
+
+def runDefault()
+    begin
+        if @src != null then
+            @help()
+        else
+            @help()
+        end
+    rescue err:String
+        Sys.println(err)
+        Sys.exit(0)
+    end
+end

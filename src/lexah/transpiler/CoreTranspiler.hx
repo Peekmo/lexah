@@ -158,15 +158,7 @@ class CoreTranspiler implements Transpiler {
       }
       // this. and compiler infos
       else if (handle.is("@")) {
-        var position = handle.position;
-        handle.nextToken();
-
-        if (!handle.is(":")) {
-          handle.prev("@");
-          handle.remove();
-          handle.insert("this.");
-          handle.increment();
-        }
+        checkThis(handle);
       }
       // Step over things in strings (" ") and process multiline strings
       else if (handle.is("\"")) {
@@ -415,6 +407,8 @@ class CoreTranspiler implements Transpiler {
       } else if (handle.safeis("or")) {
         handle.remove();
         handle.insert("||");
+      } else if (handle.is("@")) {
+        checkThis(handle);
       }
 
       handle.increment();
@@ -423,5 +417,17 @@ class CoreTranspiler implements Transpiler {
     handle.insert(")");
     handle.insert("{", true);
     handle.increment();
+  }
+
+  private function checkThis(handle: StringHandle) {
+      var position = handle.position;
+      handle.nextToken();
+
+      if (handle.position != position + 1) {
+        handle.prev("@");
+        handle.remove();
+        handle.insert("this.");
+        handle.increment();
+      }
   }
 }
