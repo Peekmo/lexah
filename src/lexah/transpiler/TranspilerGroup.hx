@@ -1,6 +1,6 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 
 class TranspilerGroup {
   var transpilers : Array<Transpiler>;

@@ -1,19 +1,18 @@
-package raxe.cli;
+package lexah.cli;
 
 import mcli.CommandLine;
 import sys.FileSystem;
-import raxe.raxefile.Raxefile;
-import raxe.tools.Error;
+import lexah.tools.Error;
 
 /**
-    -
-    8b,dPPYba,  ,adPPYYba,  8b,     ,d8  ,adPPYba,
-    88P'   "Y8  ""     `Y8   `Y8, ,8P'  a8P_____88
-    88          ,adPPPPP88     )888(    8PP"""""""
-    88          88,    ,88   ,d8" "8b,  "8b,   ,aa
-    88          `"8bbdP"Y8  8P'     `Y8  `"Ybbd8"'
+     _                        _
+    (_ )                     ( )
+    | |    __           _ _ | |__
+    | |  /'__`\(`\/') /'_` )|  _ `\
+    | | (  ___/ >  < ( (_| || | | |
+    (___)`\____)(_/\_)`\__,_)(_) (_)
 
-    Raxe 0.0.1 - https://raxe-lang.org
+    Lexah 0.0.1 - https://github.com/Peekmo/lexah
  **/
 class Cli extends CommandLine {
 
@@ -32,22 +31,15 @@ class Cli extends CommandLine {
     public var dest : String;
 
     /**
-        Task to execute when running Raxefile
-        @alias t
-     **/
-    public var task : String = "default";
-
-    /**
         Execute the command when source file(s) are changed
         @alias w
      **/
     public var watch : Bool;
 
     /**
-        Copy all (not only .rx) files to dest directory
-        @alias a
+        Copy only lexah files to dest directory
      **/
-    public var all: Bool;
+    public var lexahOnly: Bool;
 
     /**
         Show this message
@@ -62,9 +54,6 @@ class Cli extends CommandLine {
         try {
             if (this.src != null) {
                 this.transpile();
-            } else if (FileSystem.exists("Raxefile")) {
-                var rf = new Raxefile("Raxefile");
-                rf.run(this.task);
             } else {
                 this.help();
             }
@@ -83,7 +72,7 @@ class Cli extends CommandLine {
         var transpiler = new TranspilerCommand(this.src, this.dest);
         while (true) {
           try {
-            if (transpiler.transpile(this.all)) {
+            if (transpiler.transpile(this.lexahOnly)) {
               if (transpiler.response != null && transpiler.response != "") {
                 Sys.println(transpiler.response);
               } else {

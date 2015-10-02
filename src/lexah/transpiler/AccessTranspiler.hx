@@ -1,10 +1,10 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 
 class AccessTranspiler implements Transpiler {
   public function new() {}
-  
+
   public function tokens() : Array<String> {
     return [
       "{", "}", "[", "]", "(", ")", "@",
@@ -46,7 +46,7 @@ class AccessTranspiler implements Transpiler {
           handle.insert("public ");
           handle.increment();
         }
-        
+
         notPublic = false;
         handle.increment(current);
       } else {

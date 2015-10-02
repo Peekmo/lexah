@@ -1,7 +1,7 @@
-package raxe;
+package lexah;
 
 import mcli.Dispatch;
-import raxe.cli.Cli;
+import lexah.cli.Cli;
 
 class Main {
   static function main() {

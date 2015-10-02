@@ -1,12 +1,11 @@
-# raxe
+# Lexah
 
-[![Build Status](https://travis-ci.org/nondev/raxe.svg)](https://travis-ci.org/nondev/raxe) [![Join the chat at https://gitter.im/nondev/raxe](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nondev/raxe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-An awesome mix between Haxe and Ruby. Raxe is open source, cross-platform and compiles to Haxe without any performance penatly and runtime library.
+Fork from [raxe](https://github.com/nondev/raxe) because I'm a bit frustrated by the choices
+of the maintainer
 
 # Installation
 
-To install Raxe you can use haxelib
+To install Lexah you can use haxelib
 
 ```haxelib git raxe https://github.com/nondev/raxe.git```
 
@@ -28,31 +27,31 @@ Base
 --
 If you installed the library with haxelib:
 
-```haxelib run raxe <commands>```
+```haxelib run lexah```
 
 On development :
 
-```neko run <commands> <your_current_directory>```
+```neko run```
 
 Transpile
 --
 
-```haxelib run raxe -s <raxe filename or directory> [-d <filename or directory>]```
+```haxelib run lexah -s <lexah filename or directory> [-d <filename or directory>]```
 
 Arguments:
-- ```-s or --src``` the source filename (raxe) or directory
-- ```-d or --dest``` destination for the haxe file(s) generated. If omitted and src is a file, the dest will be the same filename in .hx. If omitted and src is a directory, the hx files will be generated in the same directory as raxe files.
+- ```-s or --src``` the source filename (lexah) or directory
+- ```-d or --dest``` destination for the haxe file(s) generated. If omitted and src is a file, the dest will be the same filename in .hx. If omitted and src is a directory, the hx files will be generated in the same directory as lexah files.
 
-Example : ```haxelib run raxe -s examples/ -d dist/```
+Example : ```haxelib run lexah -s examples/ -d dist/```
 
-Will transpile all raxe files from examples to dist directory. Non raxe files will be just copy/paste to the new directory
+Will transpile all lexah files from examples to dist directory. Non lexah files will be just copy/paste to the new directory
 
 Watch
 --
-If you want to automatically transpile modified raxe files, you can add argument ```-w or --watch```. It will create an endless loop that will watch your files.
+If you want to automatically transpile modified lexah files, you can add argument ```-w or --watch```. It will create an endless loop that will watch your files.
 
-Example : ```haxelib run raxe -s examples/ -d dist/ -w```
+Example : ```haxelib run lexah -s examples/ -d dist/ -w```
 
-All files
+Lexah only
 --
-If also want to copy other files other than raxe files, you can add the option ```-a or --all```. So, if you have an image inside your raxe directories, it will be copied by the transpiler (by default, it's skipped).
+If also want to only copy other files other than lexah files, you can add the option ```--lexah-only```. So, if you have an image inside your lexah directories, it will be not be copied by the transpiler (by default, it's copied).

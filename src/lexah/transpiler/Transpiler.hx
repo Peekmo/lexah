@@ -1,6 +1,6 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 
 interface Transpiler {
   public function tokens() : Array<String>;

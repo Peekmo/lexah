@@ -1,12 +1,12 @@
 {
   "name": "raxe",
-  "url" : "https://github.com/nondev/raxe",
+  "url" : "https://github.com/Peekmo/lexah",
   "license": "MIT",
   "tags": ["cross"],
-  "description": "Ruby-like syntax transpiler into haxe.",
+  "description": "Short syntax transpiler into haxe.",
   "version": "0.0.0",
   "releasenote": "TODO.",
-  "contributors": ["deathbeam"],
+  "contributors": ["peekmo"],
   "dependencies": {
     "mcli": "0.1.4"
   }

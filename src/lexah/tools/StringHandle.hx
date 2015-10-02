@@ -1,4 +1,4 @@
-package raxe.tools;
+package lexah.tools;
 
 class StringHandle {
   public var content : String;

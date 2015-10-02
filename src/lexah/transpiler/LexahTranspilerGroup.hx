@@ -1,9 +1,9 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 import sys.io.File;
 
-class RaxeTranspilerGroup extends TranspilerGroup {
+class LexahTranspilerGroup extends TranspilerGroup {
   public function new() {
     super();
   }
@@ -11,7 +11,7 @@ class RaxeTranspilerGroup extends TranspilerGroup {
   public function transpile(directory : String, file : String) : String {
     var currentPackage = StringTools.replace(file, directory, "");
     currentPackage = StringTools.replace(currentPackage, "\\", "/");
-    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".rx", "");
+    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "");
     currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "");
     currentPackage = StringTools.replace(currentPackage, "/", ".");
 

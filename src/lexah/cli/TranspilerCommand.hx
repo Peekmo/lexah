@@ -1,9 +1,9 @@
-package raxe.cli;
+package lexah.cli;
 
 import sys.FileSystem;
-import raxe.tools.Error;
-import raxe.tools.FolderReader;
-import raxe.transpiler.RaxeTranspilerGroup;
+import lexah.tools.Error;
+import lexah.tools.FolderReader;
+import lexah.transpiler.LexahTranspilerGroup;
 using StringTools;
 
 class TranspilerCommand
@@ -35,7 +35,7 @@ class TranspilerCommand
     /**
      * Transpile a file or a whole directory
      *
-     * @param raxeOnly Bool Must only copy to the dest directory, raxe files
+     * @param lexahOnly Bool Must only copy to the dest directory, raxe files
      *
      * @return Bool transpilation has been done or not
      */
@@ -85,16 +85,16 @@ class TranspilerCommand
                 var oldFileSize : Int = this.files.get(file);
                 var currentSize : Int = FileSystem.stat(file).size;
 
-                if (oldFileSize != currentSize && (all || isRaxeFile(file))) {
+                if (oldFileSize != currentSize && (all || isLexahFile(file))) {
                     var newPath = this.getDestinationFile(file, src, dest);
 
-                    // If it's a raxe file, we transpile it
-                    if (isRaxeFile(file)) {
+                    // If it's a lexah file, we transpile it
+                    if (isLexahFile(file)) {
                         var result = transpileFile(dir, file);
                         FolderReader.createFile(newPath, result);
                         this.files.set(file, currentSize);
 
-                    // If it's not a raxe file, we just copy/past it to the new folder
+                    // If it's not a lexah file, we just copy/past it to the new folder
                     } else {
                         FolderReader.copyFileSystem(file, newPath);
                     }
@@ -128,16 +128,16 @@ class TranspilerCommand
      */
     public function transpileFile(dir : String, file: String): String
     {
-        var group = new RaxeTranspilerGroup();
-        return group.transpile(dir != null ? FileSystem.fullPath(dir) : Sys.getCwd(), FileSystem.fullPath(file));
+        var group = new LexahTranspilerGroup();
+        return group.transpile(dir != null ? dir : Sys.getCwd(), file);
     }
 
     /**
      * Checks if the given file is a raxefile
      */
-    public function isRaxeFile(filename: String): Bool
+    public function isLexahFile(filename: String): Bool
     {
-        return filename.endsWith(".rx");
+        return filename.endsWith(".lxa");
     }
 
     /**
@@ -154,7 +154,7 @@ class TranspilerCommand
         var parts : Array<String> = file.split('/');
         var fileName : String = parts.pop();
 
-        var newPath = parts.join("/") + "/" + fileName.replace(".rx", ".hx");
+        var newPath = parts.join("/") + "/" + fileName.replace(".lxa", ".hx");
 
         if (dest != null) {
             newPath = newPath.replace(src, dest);

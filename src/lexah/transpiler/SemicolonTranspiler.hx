@@ -1,12 +1,12 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 
 class SemicolonTranspiler implements Transpiler {
   var counter : Array<Int> = new Array<Int>();
 
   public function new() {}
-  
+
   public function tokens() : Array<String> {
     return [
       ")", "}", ";",

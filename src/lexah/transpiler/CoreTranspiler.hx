@@ -1,6 +1,6 @@
-package raxe.transpiler;
+package lexah.transpiler;
 
-import raxe.tools.StringHandle;
+import lexah.tools.StringHandle;
 
 class CoreTranspiler implements Transpiler {
   public function new() {}
@@ -240,7 +240,7 @@ class CoreTranspiler implements Transpiler {
           } else {
             handle.insert("function");
           }
-          
+
           consumeCurlys(handle);
           handle.next("\n");
           handle.insert("{");
