@@ -14,12 +14,15 @@ def main(): Void
     @my_method(my_array)
 end
 
+--*
+  Multiline comment
+*--
 @:[static, public]
 def my_method(?params: Array<String>): Bool
-    params.each do |var|
-        if var == "hello" then
-            puts(var)
-        elsif var == "bye" then
+    params.each do |ko|
+        if ko == "hello" or ko == "test" then
+            puts(ko)
+        elsif ko == "bye" then
             for i in 0..10 do
                 puts(i)
             end

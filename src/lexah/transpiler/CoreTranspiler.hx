@@ -36,7 +36,7 @@ class CoreTranspiler implements Transpiler {
       "=>",
 
       // Standard keywords
-      "@:[", "]", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":",
+      "@:[", "]", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":", "*",
 
       // Lexah keywords
       "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue",
@@ -76,6 +76,9 @@ class CoreTranspiler implements Transpiler {
 
           if (handle.is("-")) {
             comment += "-";
+          } else if (handle.is("*")){
+            comment += "*";
+            break;
           } else {
             break;
           }
@@ -86,11 +89,11 @@ class CoreTranspiler implements Transpiler {
 
         if (comment.length > 2) {
           handle.remove(comment);
-          handle.insert("/* ");
+          handle.insert("/** ");
           handle.increment();
-          handle.next(comment);
-          handle.remove(comment);
-          handle.insert(" */");
+          handle.next("*--");
+          handle.remove("*--");
+          handle.insert(" **/");
           handle.increment();
         } else if (comment.length == 2) {
           handle.remove(comment);
@@ -301,57 +304,18 @@ class CoreTranspiler implements Transpiler {
       // Insert begin bracket after if and while
       else if (handle.safeis("if")) {
         handle.increment();
-        handle.insert("(");
-
-        while (handle.nextToken()) {
-          if (handle.safeis("then")) {
-            handle.remove();
-            break;
-          }
-
-          handle.increment();
-        }
-
-        handle.insert(")");
-        handle.insert("{", true);
-        handle.increment();
+        consumeCondition(handle, "then");
       }
       // Change elseif to else if and insert begin and end brackets around it
       else if (handle.safeis("elsif")) {
         handle.remove();
         handle.insert("}else if");
         handle.increment();
-        handle.insert("(");
-
-        while (handle.nextToken()) {
-          if (handle.safeis("then")) {
-            handle.remove();
-            break;
-          }
-
-          handle.increment();
-        }
-
-        handle.insert(")");
-        handle.insert("{", true);
-        handle.increment();
+        consumeCondition(handle, "then");
       }
       else if (handle.safeis("while") || handle.safeis("for")) {
         handle.increment();
-        handle.insert("(");
-
-        while (handle.nextToken()) {
-          if (handle.safeis("do")) {
-            handle.remove();
-            break;
-          }
-
-          handle.increment();
-        }
-
-        handle.insert(")");
-        handle.insert("{", true);
-        handle.increment();
+        consumeCondition(handle, "do");
       }
       else if (handle.safeis("next")) {
         handle.remove();
@@ -445,5 +409,28 @@ class CoreTranspiler implements Transpiler {
       handle.increment();
       if (count == 0) break;
     }
+  }
+
+  private function consumeCondition(handle: StringHandle, token: String) {
+    handle.insert("(");
+
+    while (handle.nextToken()) {
+      if (handle.safeis(token)) {
+        handle.remove();
+        break;
+      } else if (handle.safeis("and")) {
+        handle.remove();
+        handle.insert("&&");
+      } else if (handle.safeis("or")) {
+        handle.remove();
+        handle.insert("||");
+      }
+
+      handle.increment();
+    }
+
+    handle.insert(")");
+    handle.insert("{", true);
+    handle.increment();
   }
 }
