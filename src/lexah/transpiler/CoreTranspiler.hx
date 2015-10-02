@@ -39,7 +39,7 @@ class CoreTranspiler implements Transpiler {
       "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each",
+      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const",
 
       // Haxe keywords
       "using", "inline", "typedef", "try", "catch", "var",
@@ -110,6 +110,12 @@ class CoreTranspiler implements Transpiler {
         handle.remove();
         handle.next("}");
         handle.remove();
+        handle.increment();
+      }
+      // Const
+      else if (handle.is("const")) {
+        handle.remove();
+        handle.insert("public static inline var");
         handle.increment();
       }
       // Informations about a functions
@@ -190,22 +196,23 @@ class CoreTranspiler implements Transpiler {
 
         handle.increment();
       }
-      else if (handle.is("self.new")) {
-        handle.remove();
-        handle.insert("new " + name);
-        handle.increment();
-      }
       else if (handle.is(".new")) {
         handle.remove();
         handle.prevTokenLine();
 
-        if (handle.is(")")) {
-          handle.prev("(");
-          handle.prevTokenLine();
+        while(true) {
+          if (handle.is("<")) {
+            handle.prevTokenLine();
+          } else if (handle.is(")")) {
+            handle.prev("(");
+            handle.prevTokenLine();
+          } else {
+            break;
+          }
         }
 
         handle.increment();
-        handle.insert("new ");
+        handle.insert(" new ");
         handle.increment();
       }
       else if (handle.safeis("puts")) {
@@ -272,53 +279,15 @@ class CoreTranspiler implements Transpiler {
       // Defines to variables and functions
       else if (handle.safeis("def")) {
         handle.remove("def");
-        var position = handle.position;
-        safeNextToken(handle);
-
-        if (handle.safeisStart("self.")) {
-          handle.remove();
-          handle.position = position;
-          handle.insert("static ");
-          handle.increment();
-          position = handle.position;
-          safeNextToken(handle);
-        }
-
-        if (handle.safeis("new")) {
-          handle.increment();
-          handle.nextToken();
-        }
-
-        if (handle.is("(")) {
-          handle.position = position;
-          handle.insert("function");
-
-          consumeCurlys(handle);
-          handle.next("\n");
-          handle.insert("{");
-          handle.increment();
-        } else {
-          handle.position = position;
-          handle.insert("var");
-          handle.increment();
-        }
-
-        isFixed = false;
+        handle.insert("function");
+        handle.increment();
       }
       // Defines to variables and functions
-      else if (handle.is("=>")) {
-        var position = handle.position;
-        handle.prevToken();
-        handle.position = position;
-
-        if (handle.is(")")) {
-          handle.remove("=>");
-          handle.prev("(");
-          handle.insert("function");
-          consumeCurlys(handle);
-          handle.insert("{");
-        }
-
+      else if (handle.is("do")) {
+        handle.remove("do");
+        handle.insert("function");
+        handle.increment();
+        handle.insert("{");
         handle.increment();
       }
       // Insert begin bracket after if and while

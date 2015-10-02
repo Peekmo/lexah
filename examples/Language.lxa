@@ -1,5 +1,6 @@
 class self
 
+const CONSTANT = 10
 var class_attr: String
 
 @:[static]
@@ -12,6 +13,8 @@ def main(): Void
 
     var my_array = ["hello", "goodbye", "bye"]
     self.my_method(my_array)
+
+    var testx = Array<String>.new()
 end
 
 --*
