@@ -9,6 +9,10 @@ var static_class_attr: String
 @:[static, public]
 def main(): Void
     @class_attr = "Yep"
+    @class_attr
+        .split(" ")
+        .join("/")
+        
     self.static_class_attr = "Hello"
 
     var my_array = ["hello", "goodbye", "bye"]

@@ -64,7 +64,20 @@ class SemicolonTranspiler implements Transpiler {
           }
         } else {
           handle.position = position;
-          break;
+          if(!isComment){
+            position = handle.position;
+            handle.increment("\n");
+            handle.nextToken();
+
+            if(handle.isOne(["=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "<", ">", "~"]) &&   onlyWhitespace(handle.content, position + 1, handle.position - 1)){
+              break;
+            } else {
+              handle.position = position;
+              break;
+            }
+          }else{
+            break;
+          }
         }
       } else if (handle.is("/*")) {
         handle.next("*/");

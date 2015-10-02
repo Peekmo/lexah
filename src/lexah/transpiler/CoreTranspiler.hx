@@ -42,7 +42,7 @@ class CoreTranspiler implements Transpiler {
       "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const",
 
       // Haxe keywords
-      "using", "inline", "typedef", "try", "catch", "var",
+      "using", "inline", "typedef", "var",
 
       // Expressions
       "elsif", "if", "else", "while", "for", "then", "and", "or",
