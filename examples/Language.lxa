@@ -11,7 +11,7 @@ def main(): Void
     self.static_class_attr = "Hello"
 
     var my_array = ["hello", "goodbye", "bye"]
-    @my_method(my_array)
+    self.my_method(my_array)
 end
 
 --*
@@ -20,11 +20,11 @@ end
 @:[static, public]
 def my_method(?params: Array<String>): Bool
     @{@await()}
-    params.each do |ko|
+    for ko in params.iterator() do
         if ko == "hello" or ko == "test" then
             puts(ko)
         elsif ko == "bye" then
-            for i in 0..10 do
+            for i in 0...10 do
                 puts(i)
             end
         end

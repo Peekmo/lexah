@@ -36,10 +36,10 @@ class CoreTranspiler implements Transpiler {
       "=>",
 
       // Standard keywords
-      "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":", "*",
+      "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue",
+      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each",
 
       // Haxe keywords
       "using", "inline", "typedef", "try", "catch", "var",
