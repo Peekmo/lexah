@@ -36,7 +36,7 @@ class CoreTranspiler implements Transpiler {
       "=>",
 
       // Standard keywords
-      "@:[", "]", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":", "*",
+      "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":", "*",
 
       // Lexah keywords
       "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue",
@@ -105,6 +105,14 @@ class CoreTranspiler implements Transpiler {
           handle.increment();
         }
       }
+      // Invoke pure haxe code
+      else if (handle.is("@{")) {
+        handle.remove();
+        handle.next("}");
+        handle.remove();
+        handle.increment();
+      }
+      // Informations about a functions
       else if (handle.is("@:[")) {
         handle.remove();
         var startPosition = handle.position;

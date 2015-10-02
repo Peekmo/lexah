@@ -19,6 +19,7 @@ end
 *--
 @:[static, public]
 def my_method(?params: Array<String>): Bool
+    @{@await()}
     params.each do |ko|
         if ko == "hello" or ko == "test" then
             puts(ko)
