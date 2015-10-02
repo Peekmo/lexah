@@ -280,6 +280,8 @@ class CoreTranspiler implements Transpiler {
       else if (handle.safeis("def")) {
         handle.remove("def");
         handle.insert("function");
+        handle.next("\n");
+        handle.insert("{");
         handle.increment();
       }
       // Defines to variables and functions

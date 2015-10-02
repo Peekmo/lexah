@@ -39,7 +39,7 @@ class TranspilerCommand
      *
      * @return Bool transpilation has been done or not
      */
-    public function transpile(all: Bool) : Bool
+    public function transpile(lexahOnly: Bool) : Bool
     {
         var src = this.src;
         var dest = this.dest;
@@ -85,7 +85,7 @@ class TranspilerCommand
                 var oldFileSize : Int = this.files.get(file);
                 var currentSize : Int = FileSystem.stat(file).size;
 
-                if (oldFileSize != currentSize && (all || isLexahFile(file))) {
+                if (oldFileSize != currentSize && (!lexahOnly || isLexahFile(file))) {
                     var newPath = this.getDestinationFile(file, src, dest);
 
                     // If it's a lexah file, we transpile it

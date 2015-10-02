@@ -1,0 +1,11 @@
+require "mcli/Dispatch"
+require "lexah/cli/Cli"
+
+class self
+
+@:[public, static]
+def main()
+    var args = Sys.args()
+    Sys.setCwd(args.pop())
+    Dispatch.new(args).dispatch(Cli.new())
+end
