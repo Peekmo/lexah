@@ -42,7 +42,7 @@ class CoreTranspiler implements Transpiler {
       "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue",
 
       // Haxe keywords
-      "using", "inline", "typedef", "try", "catch", //"//", "import", "var", "function",
+      "using", "inline", "typedef", "try", "catch", "var",
 
       // Expressions
       "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -139,8 +139,20 @@ class CoreTranspiler implements Transpiler {
         }
       }
       // Skip compiler defines
-      else if (handle.is("#") || handle.is("@")) {
+      else if (handle.is("#")) {
         handle.next("\n");
+      }
+      // this. and compiler infos
+      else if (handle.is("@")) {
+        var position = handle.position;
+        handle.nextToken();
+
+        if (!handle.is(":")) {
+          handle.prev("@");
+          handle.remove();
+          handle.insert("this.");
+          handle.increment();
+        }
       }
       // Step over things in strings (" ") and process multiline strings
       else if (handle.is("\"")) {
