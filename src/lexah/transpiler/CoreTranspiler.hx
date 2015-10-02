@@ -39,13 +39,13 @@ class CoreTranspiler implements Transpiler {
       "@:[", "]", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@", ":",
 
       // Lexah keywords
-      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts",
+      "-", "require", "def", "self.new", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue",
 
       // Haxe keywords
       "using", "inline", "typedef", "try", "catch", //"//", "import", "var", "function",
 
       // Expressions
-      "elsif", "if", "else", "while", "for", "then",
+      "elsif", "if", "else", "while", "for", "then", "and", "or",
 
       // Types
       "class", "enum", "abstract", "interface",
@@ -190,15 +190,20 @@ class CoreTranspiler implements Transpiler {
         handle.insert("trace");
         handle.increment();
       }
-      else if (handle.safeis("try")) {
-        handle.increment();
-        handle.insert("{");
+      else if (handle.safeis("begin")) {
+        handle.remove();
+        handle.insert("try {");
         handle.increment();
       }
-      else if (handle.safeis("catch")) {
-        handle.insert("}");
+      else if (handle.safeis("raise")) {
+        handle.remove();
+        handle.insert("throw");
         handle.increment();
-        handle.increment("catch");
+      }
+      else if (handle.safeis("rescue")) {
+        handle.remove();
+        handle.insert("} catch");
+        handle.increment();
         handle.insert("(");
         handle.next("\n");
         handle.insert("){");
@@ -360,14 +365,6 @@ class CoreTranspiler implements Transpiler {
         handle.increment();
         handle.increment("else");
         handle.insert("{");
-        handle.increment();
-      }
-      else if (handle.safeis("fixed")) {
-        handle.remove();
-        isFixed = true;
-      }
-      else if (handle.safeis("inline")) {
-        isFixed = true;
         handle.increment();
       }
       // [abstract] class/interface/enum

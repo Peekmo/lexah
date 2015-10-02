@@ -30,6 +30,7 @@ def my_method(?params: Array<String>): Bool
         raise "Error"
     rescue msg: String
         puts(msg)
+    end
 
     return true
 end
