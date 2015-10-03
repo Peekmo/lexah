@@ -123,6 +123,11 @@ class CoreTranspiler implements Transpiler {
 
           if (handle.position > finalPosition) {
             handle.position = finalPosition;
+            // If some "," removed
+            if (!handle.is("]")) {
+              handle.prev("]");
+            }
+
             handle.remove();
             handle.nextToken();
             break;

@@ -1,0 +1,7 @@
+-- vim: set ft=rb:
+class self
+
+@:[public, static]
+def create(errorType: String, error: String)
+    raise '{"type": $errorType, "error": $error}'
+end

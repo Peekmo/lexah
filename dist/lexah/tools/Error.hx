@@ -1,12 +1,8 @@
-package lexah.tools;
+package lexah.tools;using Lambda;using StringTools;// vim: set ft=rb:
+class Error{
 
-/*
-  Error handling
- */
-class Error
-{
-    // Throw a new error formatted into json to be able to parse it everywhere
-    public static function create(errorType: String, error: String) {
-        throw '{"type": $errorType,"error": $error}';
-    }
+public static function create(errorType: String, error: String){
+    throw '{"type": $errorType, "error": $error}';
+};
+
 }
