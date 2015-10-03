@@ -7,15 +7,19 @@ of the maintainer
 
 To install Lexah you can use haxelib
 
-```haxelib git raxe https://github.com/nondev/raxe.git```
+```haxelib git lexah https://github.com/peekmo/lexah.git```
 
 # Build the project
 
-You'll need [mcli](https://github.com/waneck/mcli) [hscript](https://github.com/HaxeFoundation/HScript) libraries installed:
+You'll need [mcli](https://github.com/waneck/mcli) libraries installed:
 
 ```
 haxelib install mcli
-haxelib install hscript
+```
+
+Tell haxelib to look into your directory for lexah
+```
+haxelib dev lexah ./
 ```
 
 Now, compile the project with ```haxe build.hxml```
