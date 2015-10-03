@@ -1,4 +1,4 @@
---- set ft=rb:
+--- vim: set ft=rb:
 require "mcli/Dispatch"
 require "lexah/cli/Cli"
 
