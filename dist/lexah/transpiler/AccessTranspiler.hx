@@ -2,7 +2,7 @@ package lexah.transpiler;
 
 import lexah.tools.StringHandle;
 
-class AccessTranspiler implements Transpiler {
+class AccessTranspiler implements TranspilerInterface {
   public function new() {}
 
   public function tokens() : Array<String> {

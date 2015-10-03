@@ -2,7 +2,7 @@ package lexah.transpiler;
 
 import lexah.tools.StringHandle;
 
-class SemicolonTranspiler implements Transpiler {
+class SemicolonTranspiler implements TranspilerInterface {
   var counter : Array<Int> = new Array<Int>();
 
   public function new() {}
@@ -12,7 +12,7 @@ class SemicolonTranspiler implements Transpiler {
       ")", "}", ";",
       "<:", ":>",
       "@", "//", "/*", "/*", "\\\"", "\"",
-      "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "<", ">", "~",
+      "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~",
       "if", "for", "while", "else", "try", "catch"
     ];
   }
@@ -53,7 +53,7 @@ class SemicolonTranspiler implements Transpiler {
         var position = handle.position;
         handle.prevTokenLine();
 
-        if (handle.isOne(["=", ";", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "<", ">", "~", "\n"]) && onlyWhitespace(handle.content, handle.position + 1, position)) {
+        if (handle.isOne(["=", ";", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n"]) && onlyWhitespace(handle.content, handle.position + 1, position)) {
           handle.position = position;
 
           if (isComment) {
@@ -69,7 +69,7 @@ class SemicolonTranspiler implements Transpiler {
             handle.increment("\n");
             handle.nextToken();
 
-            if(handle.isOne(["=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "<", ">", "~"]) &&   onlyWhitespace(handle.content, position + 1, handle.position - 1)){
+            if(handle.isOne(["=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) &&   onlyWhitespace(handle.content, position + 1, handle.position - 1)){
               break;
             } else {
               handle.position = position;

@@ -2,12 +2,13 @@ package lexah.transpiler;
 
 import lexah.tools.StringHandle;
 
-class CoreTranspiler implements Transpiler {
+class CoreTranspiler implements TranspilerInterface {
   public function new() {}
 
   var script : Bool = false;
   var path : String = "";
   var name : String = "";
+  var currentType : String = "";
 
   public function setIsScript(script : Bool) : CoreTranspiler {
     this.script = script;
@@ -123,10 +124,11 @@ class CoreTranspiler implements Transpiler {
 
           if (handle.position > finalPosition) {
             handle.position = finalPosition;
+            // If some "," removed
             if (!handle.is("]")) {
               handle.prev("]");
             }
-            
+
             handle.remove();
             handle.nextToken();
             break;
@@ -259,7 +261,11 @@ class CoreTranspiler implements Transpiler {
         handle.remove("def");
         handle.insert("function");
         handle.next("\n");
-        handle.insert("{");
+
+        if (this.currentType == "class") {
+          handle.insert("{");
+        }
+
         handle.increment();
       }
       // Defines to variables and functions
@@ -302,6 +308,7 @@ class CoreTranspiler implements Transpiler {
       }
       // [abstract] class/interface/enum
       else if (handle.safeis("class") || handle.safeis("interface") || handle.safeis("enum")) {
+        this.currentType = handle.current;
         if (isFixed) {
           fullyFixed = true;
           isFixed = false;
@@ -313,10 +320,10 @@ class CoreTranspiler implements Transpiler {
           if (handle.is("self")) {
             handle.remove();
             handle.insert(name);
-          } else if (handle.is("<")) {
+          } else if (handle.safeis("<")) {
             handle.remove();
             handle.insert("extends");
-          } else if (handle.is("::")) {
+          } else if (handle.safeis("::")) {
             handle.remove();
             handle.insert("implements");
           } else if (handle.is("\n")) {
