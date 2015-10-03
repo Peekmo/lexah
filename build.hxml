@@ -1,4 +1,6 @@
+-cmd haxelib run lexah -s ./src -d ./dist
+--next
 -lib mcli
--cp src
+-cp dist
 -main lexah.Main
 -neko run.n

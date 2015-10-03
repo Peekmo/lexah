@@ -42,7 +42,7 @@ var watch: Bool
     Copy only lexah files to dest directory
 *--
 @:[public]
-var lexahOnly: Bool
+var lexah_only: Bool
 
 --*
     Show this message
@@ -87,7 +87,7 @@ end
 def runDefault()
     begin
         if @src != null then
-            @transpile()
+            @help()
         else
             @help()
         end

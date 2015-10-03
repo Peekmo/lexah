@@ -1,5 +1,6 @@
 class self
 
-def self.main()
-  def myvar : String = null
+@:[public, static]
+def main()
+    puts("Hello World")
 end
