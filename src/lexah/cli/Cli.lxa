@@ -56,6 +56,7 @@ end
 
 @:[private]
 def transpile()
+    
     if @src != null then
         if !FileSystem.exists(@src) then
             Error.create(self.ERROR_TYPE, "Source not found")

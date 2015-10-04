@@ -1,0 +1,58 @@
+-- vim: set ft=rb:
+require "sys/FileSystem"
+require "sys/io/File"
+
+class self
+
+--*
+    Returns an array of all files which are in the given folder and its subfolders
+
+    @param root_folder : String Root folder for the search
+
+    @return Files found
+*--
+@:[public, static]
+def get_files(root_folder: String): Array<String>
+    var files = Array<String>.new()
+    
+    if FileSystem.exists(root_folder) then
+        var folders = FileSystem.readDirectory(root_folder)
+
+        for file in folders.iterator() do
+            var path = root_folder + "/" + file
+
+            if FileSystem.isDirectory(path) then
+                var data = self.get_files(path)
+
+                for i in data do
+                    files.push(i)
+                end
+            else
+                files.push(path)
+            end
+        end
+    end
+
+    return files
+end
+
+--*
+    Creates a file to the given path, with the given content
+    (Creates all directories if they not exists)
+
+    @param path     String Path to the file
+    @param ?content String File's content
+*--
+@:[public, static]
+def createFile(path: String, ?content: String): Void
+    var parts = path.split("/")
+    var fileName = parts.pop()
+
+    self.createFile(parts.join("/"))
+
+    if content == null then
+        content = ""
+    end
+
+    File.saveContent(path, content)
+end

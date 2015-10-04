@@ -43,7 +43,7 @@ class CoreTranspiler implements TranspilerInterface {
       "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const",
+      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const", "nil",
 
       // Haxe keywords
       "using", "inline", "typedef", "var",
