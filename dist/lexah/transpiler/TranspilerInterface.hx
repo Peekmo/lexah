@@ -1,4 +1,5 @@
-package lexah.transpiler;using Lambda;using StringTools;import lexah.tools.StringHandle;
+package lexah.transpiler;using Lambda;using StringTools;// vim: set ft=rb:
+import lexah.tools.StringHandle;
 
 interface TranspilerInterface{
 

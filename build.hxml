@@ -1,4 +1,4 @@
--cmd haxelib run lexah -s ./src -d ./dist
+-cmd haxelib run lexah -s src -d dist
 --next
 -lib mcli
 -cp dist

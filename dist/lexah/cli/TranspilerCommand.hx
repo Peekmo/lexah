@@ -56,7 +56,7 @@ class TranspilerCommand
                 if (dest == null) {
                     this.response = result;
                 } else {
-                    FolderReader.createFile(dest, result);
+                    FolderReader.create_file(dest, result);
                 }
 
                 this.files.set(this.src, currentSize);
@@ -66,7 +66,7 @@ class TranspilerCommand
             return false;
         // Transpile a whole folder
         } else {
-            var files = FolderReader.getFiles(src);
+            var files = FolderReader.get_files(src);
             var hasTranspile : Bool = false;
 
             // To have the same pattern between src and dest (avoid src/ and dist instead of dist/)
@@ -91,12 +91,12 @@ class TranspilerCommand
                     // If it's a lexah file, we transpile it
                     if (isLexahFile(file)) {
                         var result = transpileFile(dir, file);
-                        FolderReader.createFile(newPath, result);
+                        FolderReader.create_file(newPath, result);
                         this.files.set(file, currentSize);
 
                     // If it's not a lexah file, we just copy/past it to the new folder
                     } else {
-                        FolderReader.copyFileSystem(file, newPath);
+                        FolderReader.copy_file_system(file, newPath);
                     }
 
                     this.files.set(file, currentSize);

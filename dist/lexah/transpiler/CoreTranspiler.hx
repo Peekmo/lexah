@@ -43,7 +43,7 @@ class CoreTranspiler implements TranspilerInterface {
       "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const",
+      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const", "nil",
 
       // Haxe keywords
       "using", "inline", "typedef", "var",
@@ -269,8 +269,8 @@ class CoreTranspiler implements TranspilerInterface {
         handle.increment();
       }
       // Defines to variables and functions
-      else if (handle.is("do")) {
-        handle.remove("do");
+      else if (handle.safeis("do")) {
+        handle.remove();
         handle.insert("function");
         handle.increment();
         handle.insert("{");

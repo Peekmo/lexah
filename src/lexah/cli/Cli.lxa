@@ -49,14 +49,13 @@ var lexahOnly: Bool
     @alias h
 *--
 @:[public]
-def help()
+def help() : Void
     Sys.println(@showUsage())
     Sys.exit(0)
 end
 
 @:[private]
-def transpile()
-    
+def transpile() : Void
     if @src != null then
         if !FileSystem.exists(@src) then
             Error.create(self.ERROR_TYPE, "Source not found")
@@ -85,7 +84,7 @@ def transpile()
 end
 
 @:[public]
-def runDefault()
+def runDefault() : Void
     begin
         if @src != null then
             @transpile()

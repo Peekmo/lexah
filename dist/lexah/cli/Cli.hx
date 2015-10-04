@@ -44,12 +44,12 @@ public var lexahOnly: Bool;
     Show this message
     @alias h
 **/
-public function help(){
+public function help() : Void{
     Sys.println(this.showUsage());
     Sys.exit(0);
 };
 
-private function transpile(){
+private function transpile() : Void{
     if( this.src != null ){
         if( !FileSystem.exists(this.src) ){
             Error.create(Cli.ERROR_TYPE, "Source not found");
@@ -77,7 +77,7 @@ private function transpile(){
     }
 };
 
-public function runDefault(){
+public function runDefault() : Void{
     try {
         if( this.src != null ){
             this.transpile();

@@ -269,8 +269,8 @@ class CoreTranspiler implements TranspilerInterface {
         handle.increment();
       }
       // Defines to variables and functions
-      else if (handle.is("do")) {
-        handle.remove("do");
+      else if (handle.safeis("do")) {
+        handle.remove();
         handle.insert("function");
         handle.increment();
         handle.insert("{");

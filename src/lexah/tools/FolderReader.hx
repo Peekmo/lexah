@@ -15,7 +15,7 @@ class FolderReader
      * @param rootFolder : String Root folder for the search
      * @return Files found
      */
-    public static function getFiles(rootFolder: String) : Array<String>
+    public static function get_files(rootFolder: String) : Array<String>
     {
         var files : Array<String> = new Array<String>();
 
@@ -25,7 +25,7 @@ class FolderReader
             for (file in folders.iterator()) {
                 var path : String = rootFolder + '/' + file;
                 if (FileSystem.isDirectory(path)) {
-                    var data : Array<String> = getFiles(path);
+                    var data : Array<String> = get_files(path);
 
                     for (i in data) {
                         files.push(i);
@@ -46,13 +46,13 @@ class FolderReader
      * @param  path     : String Path to the file (each folders separated by '/')
      * @param  ?content : String File's content
      */
-    public static function createFile(path : String, ?content : String) : Void
+    public static function create_file(path : String, ?content : String) : Void
     {
         var parts : Array<String> = path.split('/');
         var fileName : String = parts.pop();
 
         // Create all directories necessaries
-        createDirectory(parts.join('/'));
+        create_directory(parts.join('/'));
 
         if (content == null) {
             content = "";
@@ -65,7 +65,7 @@ class FolderReader
      * Creates the given directory (and all path's directories if needed)
      * @param  path : String Path to the given directory
      */
-    public static function createDirectory(path : String) : Void
+    public static function create_directory(path : String) : Void
     {
         var parts : Array<String> = path.split('/');
 
@@ -85,7 +85,7 @@ class FolderReader
      * @param  source      : String Source's path
      * @param  destination : String Destination's path
      */
-    public static function copyFileSystem(source : String, destination : String) : Void
+    public static function copy_file_system(source : String, destination : String) : Void
     {
         try {
             if (source.endsWith("/")) {
@@ -94,17 +94,17 @@ class FolderReader
 
             // If that's a file
             if (!FileSystem.isDirectory(source)) {
-                createFile(destination, File.getContent(source));
+                create_file(destination, File.getContent(source));
             } else {
                 var files : Array<String> = FileSystem.readDirectory(source);
 
                 for (file in files.iterator()) {
                     if (FileSystem.isDirectory(source + "/" + file)) {
-                        createDirectory(destination);
+                        create_directory(destination);
                     }
 
                     // Recursive call
-                    copyFileSystem(source + "/" + file, destination + "/" + file);
+                    copy_file_system(source + "/" + file, destination + "/" + file);
                 }
             }
 
