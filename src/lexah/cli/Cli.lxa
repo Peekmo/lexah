@@ -1,4 +1,6 @@
 -- vim: set ft=rb:
+module lexah.cli
+
 require "mcli/CommandLine"
 require "sys/FileSystem"
 require "lexah/tools/Error"

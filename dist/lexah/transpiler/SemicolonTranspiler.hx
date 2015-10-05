@@ -28,7 +28,7 @@ class SemicolonTranspiler implements TranspilerInterface {
         handle.nextToken();
         handle.position = position;
 
-        if (!handle.isOne([")", "]"])) {
+        if (!handle.isOne([")", "]"]) && handle.position != 0) {
           handle.insert(";");
           handle.increment();
         }
@@ -47,7 +47,7 @@ class SemicolonTranspiler implements TranspilerInterface {
   }
 
   private function skipLines(handle : StringHandle) {
-    while(handle.nextTokenLine()) {
+    do {
       if (handle.is("\n") || handle.is("//")) {
         var isComment = handle.is("//");
         var position = handle.position;
@@ -128,7 +128,7 @@ class SemicolonTranspiler implements TranspilerInterface {
       } else {
         break;
       }
-    }
+    } while(handle.nextTokenLine());
 
     handle.nextTokenLine();
   }

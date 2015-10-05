@@ -1,3 +1,6 @@
+-- vim: set ft=rb:
+module examples
+
 class self
 
 const CONSTANT = 10

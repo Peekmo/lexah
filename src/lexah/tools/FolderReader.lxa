@@ -1,4 +1,6 @@
 -- vim: set ft=rb:
+module lexah.tools
+
 require "sys/FileSystem"
 require "sys/io/File"
 

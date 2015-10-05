@@ -1,4 +1,6 @@
 -- vim: set ft=rb:
+module lexah.transpiler
+
 require "lexah/tools/StringHandle"
 
 interface self

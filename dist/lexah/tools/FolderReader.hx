@@ -1,6 +1,11 @@
-package lexah.tools;using Lambda;using StringTools;// vim: set ft=rb:
+// vim: set ft=rb:
+package lexah.tools;
+
 import sys.FileSystem;
 import sys.io.File;
+
+using Lambda;
+using StringTools;
 
 class FolderReader{
 

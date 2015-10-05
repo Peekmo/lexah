@@ -1,4 +1,6 @@
-package lexah.cli;using Lambda;using StringTools;// vim: set ft=rb:
+// vim: set ft=rb:
+package lexah.cli;
+
 import mcli.CommandLine;
 import sys.FileSystem;
 import lexah.tools.Error;
@@ -13,6 +15,9 @@ import lexah.tools.Error;
 
     Lexah 0.0.1 - https://github.com/Peekmo/lexah
 **/
+using Lambda;
+using StringTools;
+
 class Cli extends CommandLine{
 
 public static inline var ERROR_TYPE = "transpile_error";

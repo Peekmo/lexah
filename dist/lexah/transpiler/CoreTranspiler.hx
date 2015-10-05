@@ -43,7 +43,7 @@ class CoreTranspiler implements TranspilerInterface {
       "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const", "nil",
+      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const", "module",
 
       // Haxe keywords
       "using", "inline", "typedef", "var",
@@ -63,10 +63,6 @@ class CoreTranspiler implements TranspilerInterface {
     var alreadyDefined = script;
     var isFixed = false;
     var fullyFixed = false;
-
-    if (!script) {
-      handle.insert("package " + path + ";using Lambda;using StringTools;").increment();
-    }
 
     while (handle.nextToken()) {
       // Process comments and ignore everything in
@@ -225,13 +221,15 @@ class CoreTranspiler implements TranspilerInterface {
         handle.insert("}");
         handle.increment();
       }
+      // Module = package
+      else if (handle.safeis("module")) {
+        handle.remove();
+        handle.insert("package");
+        handle.increment();
+        handle.next("\n");
+      }
       // Change require to classic imports
       else if (handle.safeis("require")) {
-        if (script) {
-          handle.increment();
-          continue;
-        }
-
         handle.remove();
         handle.insert("import");
         handle.increment();
@@ -309,10 +307,9 @@ class CoreTranspiler implements TranspilerInterface {
       // [abstract] class/interface/enum
       else if (handle.safeis("class") || handle.safeis("interface") || handle.safeis("enum")) {
         this.currentType = handle.current;
-        if (isFixed) {
-          fullyFixed = true;
-          isFixed = false;
-        }
+        handle.remove();
+        handle.insert("using Lambda;\nusing StringTools;\n\n").increment();
+        handle.insert(this.currentType);
 
         handle.increment();
 
