@@ -57,6 +57,48 @@ def nearEnd(tolerance: Int) : Bool
 end
 
 --*
+    Go to the closest token
+*--
+def closest(content: String): Bool
+    var divided = @divided();
+    var regex = new EReg("[^\\w][ \t]*" + content, "")
+    var sub = @content.substr(@position)
+
+    var count = 1
+    while true do
+        if sub.charAt(count) == " "
+        or sub.charAt(count) == "\t"
+        or sub.charAt(count) == "\n" then
+            count++
+        else
+            break
+        end
+    end
+
+    return regex.match(sub.substr(0, count))
+end
+
+--*
+    Checks if the current is the content
+*--
+def is(content: String): Bool
+    return @current == content
+end
+
+--*
+    Checks if the current is in the given array
+*--
+def isOne(content: Array<String>): Bool
+    var contains = false
+
+    for cnt in content do
+        contains = contains || @current == cnt
+    end
+
+    return contains
+end
+
+--*
     Splits the text in 2 parts
 *--
 def divided(?offset: Int = 0)
