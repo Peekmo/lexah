@@ -43,7 +43,7 @@ end
     (Creates all directories if they not exists)
 
     @param path     String Path to the file
-    @param ?content String File's content
+    @param ?content String File content
 *--
 @:[public, static]
 def create_file(path: String, ?content: String): Void
@@ -60,7 +60,7 @@ def create_file(path: String, ?content: String): Void
 end
 
 --*
-    Creates the given directory (and all path's directories if needed)
+    Creates the given directory (and all path directories if needed)
 
     @param path String Path to the given directory
 *--
@@ -81,8 +81,8 @@ end
 --*
     Copy all files from source to destination
 
-    @param  source      String Source's path
-    @param  destination String Destination's path
+    @param  source      String Source path
+    @param  destination String Destination path
 *--
 @:[public, static]
 def copy_file_system(source: String, destination: String): Void
