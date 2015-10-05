@@ -1,0 +1,71 @@
+-- vim: set ft=rb:
+module lexah.tools
+
+class StringHandle
+
+@:[public] var content: String
+@:[public] var position: Int
+@:[public] var current: String
+@:[public] var tokens: Array<String>
+
+def new(content: String, ?tokens: Array<String>, position: Int = 0)
+    @content = content
+
+    if tokens == null then
+        @tokens = ["\n"]
+    else
+        @tokens = tokens
+    end
+
+    @position = position
+end
+
+--*
+    Reset position and text
+*--
+def reset() : Void
+    @position = 0
+    @current = null
+end
+
+--*
+    Check if we are in the beginning of @current
+*--
+def atStart() : Bool
+    return @position <= 0
+end
+
+--*
+    Check if we are in the end of @current
+*--
+def atEnd() : Bool
+    return @position >= @content.length
+end
+
+--*
+    Check if we are in near the beginning of @current
+*--
+def nearStart(tolerance: Int) : Bool
+    return (@position - tolerance) <= 0
+end
+
+--*
+    Check if we are in near the end of @current
+*--
+def nearEnd(tolerance: Int) : Bool
+    return (@position + tolerance) > @content.length
+end
+
+--*
+    Splits the text in 2 parts
+*--
+def divided(?offset: Int = 0)
+    return {
+        left: (@position + offset) > 0
+            ? @content.substr(0, @position + offset)
+            : "",
+        right: (@position + offset) < @content.length
+            ? @content.substring(@position + offset)
+            : ""
+    }
+end

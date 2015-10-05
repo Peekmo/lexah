@@ -9,8 +9,7 @@ class SemicolonTranspiler implements TranspilerInterface {
 
   public function tokens() : Array<String> {
     return [
-      ")", "}", ";",
-      "<:", ":>",
+      ")", "}", ";", "?", ":",
       "@", "//", "/*", "/*", "\\\"", "\"",
       "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~",
       "if", "for", "while", "else", "try", "catch"
@@ -68,8 +67,7 @@ class SemicolonTranspiler implements TranspilerInterface {
             position = handle.position;
             handle.increment("\n");
             handle.nextToken();
-
-            if(handle.isOne(["=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) &&   onlyWhitespace(handle.content, position + 1, handle.position - 1)){
+            if(handle.isOne(["?", ":", "=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) &&   onlyWhitespace(handle.content, position + 1, handle.position - 1)){
               break;
             } else {
               handle.position = position;
