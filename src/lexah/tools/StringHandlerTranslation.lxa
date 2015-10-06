@@ -99,6 +99,28 @@ def isOne(content: Array<String>): Bool
 end
 
 --*
+    Token started by whitespace
+*--
+def safeisStart(content: String): Bool
+    var regex = new EReg("[^\\w]" + content, "")
+
+    if @nearStart(1) then
+        return @is(content)
+    end
+
+    if @nearEnd(content.length + 1) then
+        return @is(content)
+    end
+
+    var sub = @content.substr(
+        @nearStart(1) ? @position : @position - 1,
+        @nearEnd(@content.length + 1) ? @content.length : @content.length + 1
+    )
+
+    return regex.match(sub)
+end
+
+--*
     Splits the text in 2 parts
 *--
 def divided(?offset: Int = 0)
