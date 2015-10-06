@@ -121,6 +121,160 @@ def safeisStart(content: String): Bool
 end
 
 --*
+    Token ended by whitespace
+*--
+def safeisEnd(content: String): Bool
+    var regex = new EReg(content + "[^\\w]", "")
+
+    if @nearEnd(content.length + 2) then
+        return @is(content)
+    end
+
+    var sub = @content.substr(
+        0,
+        @nearEnd(content.length+2) ? content.length : content.length+2
+    )
+
+    return regex.match(sub)
+end
+
+--*
+    Token started and ended by withespace
+*--
+def safeis(content: String): Bool
+    var regex = new EReg("[^\\w]" + content + "[^\\w]", "")
+
+    if @nearStart(1) then
+        return @safeisEnd(content)
+    end
+
+    if @nearEnd(content.length + 2) then
+        return @safeisStart(content)
+    end
+
+    var sub = @content.substr(@position, content.length + 2)
+
+    return regex.match(sub)
+end
+
+--*
+    Checks if the content to the right is...
+*--
+def at(content: String): Bool
+    var divided = @divided()
+
+    if divided.right.substr(0, content.length) == content then
+        return true
+    end
+
+    return false
+end
+
+--*
+    Get the previous given token
+    Returns the previous same token as current one if content is not provided
+*--
+def prev(?content: String): Bool
+    if content == null then
+        if @current != null then
+            return @prev(@current)
+        end
+
+        return false
+    end
+
+    var new_pos = @content.substr(0, @position).lastIndexOf(content)
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = content
+    return true
+end
+
+--*
+    Get the next given token
+    Returns the next same token as current one if content is not provided
+*--
+def next(?content: String): Bool
+    if content == null then
+        if @current != null then
+            return @next(@current)
+        end
+
+        return false
+    end
+
+    var new_pos = @content.lastIndexOf(content, @position)
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = content
+    return true
+end
+
+--*
+    Gets the previous token
+*--
+def prevToken(): Bool
+    var new_pos = @position + 1
+    var current_token = ""
+
+    for token in tokens do
+        var pos = @content.substr(0, @position).lastIndexOf(token))
+
+        if pos != -1 and (pos > new_pos or new_pos == @position + 1) then
+            new_pos = pos
+            current_token = token
+        end
+    end
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = current_token
+    return true
+end
+
+--*
+    Gets the previous token on the same line
+*--
+def prevTokenLine(): Bool
+    var new_pos = @position + 1
+    var current_token = ""
+
+    for token in tokens do
+        var pos = @content.substr(0, @position).lastIndexOf(token))
+
+        if pos != -1 and (pos > new_pos or new_pos == @position + 1) then
+            new_pos = pos
+            current_token = token
+        end
+    end
+
+    var pos = @content.substr(0, @position).lastIndexOf("\n"))
+    if pos != -1 and (pos > new_pos or new_pos == @position+1) then
+        new_pos = pos
+        current_token = "\n"
+    end
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = current_token
+    return true
+end
+
+--*
     Splits the text in 2 parts
 *--
 def divided(?offset: Int = 0)
