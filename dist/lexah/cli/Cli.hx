@@ -55,17 +55,17 @@ public function help() : Void{
 };
 
 private function transpile() : Void{
-    if( this.src != null ){
-        if( !FileSystem.exists(this.src) ){
+    if( this.src != null ) {
+        if( !FileSystem.exists(this.src) ) {
             Error.create(Cli.ERROR_TYPE, "Source not found");
         }
 
         var transpiler = new  TranspilerCommand(this.src, this.dest);
-        while( true ){
+        while( true ) {
             try {
                 if( transpiler.transpile(this.lexahOnly) &&
                     transpiler.response != null &&
-                    transpiler.response != "" ){
+                    transpiler.response != "" ) {
                     Sys.println(transpiler.response);
                 }else{
                     Sys.println("Transpilation done.");
@@ -75,7 +75,7 @@ private function transpile() : Void{
                 Sys.println(err);
             }
 
-            if( !this.watch ){
+            if( !this.watch ) {
                 break;
             }
         }
@@ -84,7 +84,7 @@ private function transpile() : Void{
 
 public function runDefault() : Void{
     try {
-        if( this.src != null ){
+        if( this.src != null ) {
             this.transpile();
         }else{
             this.help();

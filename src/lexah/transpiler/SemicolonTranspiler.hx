@@ -11,7 +11,7 @@ class SemicolonTranspiler implements TranspilerInterface {
     return [
       ")", "}", ";", "?", ":",
       "@", "//", "/*", "/*", "\\\"", "\"",
-      "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~",
+      "++", "=", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~",
       "if", "for", "while", "else", "try", "catch"
     ];
   }
@@ -19,6 +19,11 @@ class SemicolonTranspiler implements TranspilerInterface {
   public function transpile(handle : StringHandle) {
     while(handle.nextTokenLine()) {
       skipLines(handle);
+      if (handle.is("++") || handle.is("--")) {
+          handle.increment();
+          handle.insert(";");
+          handle.increment();
+      }
 
       if (handle.is("\n") || handle.is("//")) {
         var position = handle.position;

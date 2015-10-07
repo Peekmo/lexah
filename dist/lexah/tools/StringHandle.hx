@@ -1,312 +1,438 @@
+// vim: set ft=rb:
 package lexah.tools;
 
-class StringHandle {
-  public var content : String;
-  public var position : Int;
-  public var current : String;
-  public var tokens : Array<String>;
+using Lambda;
+using StringTools;
 
-  public function new(content : String, ?tokens : Array<String>, position : Int = 0) {
+class StringHandle{
+
+public var content: String;
+public var position: Int;
+public var current: String;
+public var tokens: Array<String>;
+
+public function new(content: String, ?tokens: Array<String>, position: Int = 0){
     this.content = content;
 
-    if (tokens == null) {
-      this.tokens = [ "\n" ];
-    } else {
-      this.tokens = tokens;
+    if( tokens == null ) {
+        this.tokens = ["\n"];
+    }else{
+        this.tokens = tokens;
     }
 
     this.position = position;
-  }
+};
 
-  public function reset() {
-    position = 0;
-    current = null;
-  }
+/**
+    Reset position and text
+**/
+public function reset() : Void{
+    this.position = 0;
+    this.current = null;
+};
 
-  public function atStart() : Bool {
-    return position <= 0;
-  }
+/**
+    Check if we are in the beginning of @current
+**/
+public function atStart() : Bool{
+    return this.position <= 0;
+};
 
-  public function atEnd() : Bool {
-    return position >= content.length;
-  }
+/**
+    Check if we are in the end of @current
+**/
+public function atEnd() : Bool{
+    return this.position >= this.content.length;
+};
 
-  public function nearStart(tolerance : Int) : Bool {
-    return (position - tolerance) <= 0;
-  }
+/**
+    Check if we are in near the beginning of @current
+**/
+public function nearStart(tolerance: Int) : Bool{
+    return (this.position - tolerance) <= 0;
+};
 
-  public function nearEnd(tolerance : Int) : Bool {
-    return (position + tolerance) >= content.length;
-  }
+/**
+    Check if we are in near the end of @current
+**/
+public function nearEnd(tolerance: Int) : Bool{
+    return (this.position + tolerance) > this.content.length;
+};
 
-  public function closest(content : String) : Bool {
-    var divided = divide();
+/**
+    Go to the closest token
+**/
+public function closest(content: String): Bool{
+    var divided = this.divide();
     var regex = new EReg("[^\\w][ \t]*" + content, "");
-
-    var sub = this.content.substr(position);
+    var sub = this.content.substr(this.position);
 
     var count = 1;
-
-    while (true) {
-      if (sub.charAt(count) == " " || sub.charAt(count) == "\t" || sub.charAt(count) == "\n") {
-        count ++;
-      } else {
-        break;
-      }
+    while( true ) {
+        if( sub.charAt(count) == " "
+        || sub.charAt(count) == "\t"
+        || sub.charAt(count) == "\n" ) {
+            count++;
+        }else{
+            break;
+        }
     }
 
     return regex.match(sub.substr(0, count));
-  }
+};
 
-  public function is(content : String) : Bool {
-    return current == content;
-  }
+/**
+    Checks if the current is the content
+**/
+public function is(content: String): Bool{
+    return this.current == content;
+};
 
-  public function isOne(content : Array<String>) : Bool {
+/**
+    Checks if the current is in the given array
+**/
+public function isOne(content: Array<String>): Bool{
     var contains = false;
 
-    for (cnt in content) {
-      contains = contains || current == cnt;
+    for( cnt in content ) {
+        contains = contains || this.current == cnt;
     }
 
     return contains;
-  }
+};
 
-  public function safeisStart(content : String) : Bool {
+/**
+    Token started by whitespace
+**/
+public function safeisStart(content: String): Bool{
     var regex = new EReg("[^\\w]" + content, "");
 
-    if (nearStart(1)) {
-      return is(content);
+    if( this.nearStart(1) ) {
+        return this.is(content);
     }
 
-    if (nearEnd(content.length + 1)) {
-      return is(content);
+    if( this.nearEnd(content.length + 1) ) {
+        return this.is(content);
     }
 
     var sub = this.content.substr(
-      nearStart(1) ? position : position - 1,
-      nearEnd(content.length + 1) ? content.length : content.length + 1);
+        this.nearStart(1) ? this.position : this.position - 1,
+        this.nearEnd(content.length + 1) ? content.length : content.length + 1
+    );
 
     return regex.match(sub);
-  }
+};
 
-  public function safeisEnd(content : String) : Bool {
+/**
+    Token ended by whitespace
+**/
+public function safeisEnd(content: String): Bool{
     var regex = new EReg(content + "[^\\w]", "");
 
-    if (nearEnd(content.length + 2)) {
-      return is(content);
+    if( this.nearEnd(content.length + 2) ) {
+        return this.is(content);
     }
 
     var sub = this.content.substr(
-      0,
-      nearEnd(content.length + 2) ? content.length : content.length + 2);
+        0,
+        this.nearEnd(content.length+2) ? content.length : content.length+2
+    );
 
     return regex.match(sub);
-  }
+};
 
-  public function safeis(content : String) : Bool {
+/**
+    Token started and ended by withespace
+**/
+public function safeis(content: String): Bool{
     var regex = new EReg("[^\\w]" + content + "[^\\w]", "");
 
-    if (nearStart(1)) {
-      return safeisEnd(content);
+    if( this.nearStart(1) ) {
+        return this.safeisEnd(content);
     }
 
-    if (nearEnd(content.length + 2)) {
-      return safeisStart(content);
+    if( this.nearEnd(content.length + 2) ) {
+        return this.safeisStart(content);
     }
 
-    var sub = this.content.substr(
-      nearStart(1) ? position : position - 1,
-      content.length + 2);
+    var sub = this.content.substr(this.position-1, content.length + 2);
 
     return regex.match(sub);
-  }
+};
 
-  public function at(content : String) : Bool {
-    var divided = divide();
-    if (divided.right.substr(0, content.length) == content) return true;
+/**
+    Checks if the content to the right is...
+**/
+public function at(content: String): Bool{
+    var divided = this.divide();
+
+    if( divided.right.substr(0, content.length) == content ) {
+        return true;
+    }
+
     return false;
-  }
+};
 
-  public function prev(?content : String) : Bool {
-    if (content == null) {
-      if (current != null) return prev(current);
-      return false;
+/**
+    Get the previous given token
+    Returns the previous same token as current one if content is not provided
+**/
+public function prev(?content: String): Bool{
+    if( content == null ) {
+        if( this.current != null ) {
+            return this.prev(this.current);
+        }
+
+        return false;
     }
 
-    var newPos = this.content.substr(0, position).lastIndexOf(content);
-    if (newPos == -1) return false;
-    position = newPos;
-    current = content;
+    var new_pos = this.content.substr(0, this.position).lastIndexOf(content);
+
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = content;
     return true;
-  }
+};
 
-  public function next(?content : String) : Bool {
-    if (content == null) {
-      if (current != null) return next(current);
-      return false;
+/**
+    Get the next given token
+    Returns the next same token as current one if content is not provided
+**/
+public function next(?content: String): Bool{
+    if( content == null ) {
+        if( this.current != null ) {
+            return this.next(this.current);
+        }
+
+        return false;
     }
 
-    var newPos = this.content.indexOf(content, position);
-    if (newPos == -1) return false;
-    position = newPos;
-    current = content;
+    var new_pos = this.content.indexOf(content, this.position);
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = content;
     return true;
-  }
+};
 
-  public function prevToken() : Bool {
-    var newPos = position + 1;
-    var currentToken = "";
+/**
+    Gets the previous token
+**/
+public function prevToken(): Bool{
+    var new_pos = this.position + 1;
+    var current_token = "";
 
-    for (token in tokens) {
-      var pos = this.content.substr(0, position).lastIndexOf(token);
+    for( token in tokens ) {
+        var pos = this.content.substr(0, this.position).lastIndexOf(token);
 
-      if (pos != -1 && (pos > newPos || newPos == position + 1)) {
-        newPos = pos;
-        currentToken = token;
-      }
+        if( pos != -1 && (pos > new_pos || new_pos == this.position + 1) ) {
+            new_pos = pos;
+            current_token = token;
+        }
     }
 
-    if (newPos == -1) return false;
-    position = newPos;
-    current = currentToken;
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = current_token;
     return true;
-  }
+};
 
-  public function prevTokenLine() : Bool {
-    var newPos = position + 1;
-    var currentToken = "";
+/**
+    Gets the previous token on the same line
+**/
+public function prevTokenLine(): Bool{
+    var new_pos = this.position + 1;
+    var current_token = "";
 
-    for (token in tokens) {
-      var pos = this.content.substr(0, position).lastIndexOf(token);
+    for( token in tokens ) {
+        var pos = this.content.substr(0, this.position).lastIndexOf(token);
 
-      if (pos != -1 && (pos > newPos || newPos == position + 1)) {
-        newPos = pos;
-        currentToken = token;
-      }
+        if( pos != -1 && (pos > new_pos || new_pos == this.position + 1) ) {
+            new_pos = pos;
+            current_token = token;
+        }
     }
 
-    var pos = this.content.substr(0, position).lastIndexOf("\n");
-
-    if (pos != -1 && (pos > newPos || newPos == position + 1)) {
-      newPos = pos;
-      currentToken = "\n";
+    var pos = this.content.substr(0, this.position).lastIndexOf("\n");
+    if( pos != -1 && (pos > new_pos || new_pos == this.position+1) ) {
+        new_pos = pos;
+        current_token = "\n";
     }
 
-    if (newPos == -1) return false;
-    position = newPos;
-    current = currentToken;
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = current_token;
     return true;
-  }
+};
 
-  public function nextTokenLine() : Bool {
-    var newPos = -1;
-    var currentToken = "";
+/**
+    Gets the next token on the same line
+**/
+public function nextTokenLine(): Bool{
+    var new_pos = -1;
+    var current_token = "";
 
-    for (token in tokens) {
-      var pos = this.content.indexOf(token, position);
+    for( token in tokens ) {
+        var pos = this.content.indexOf(token, this.position);
 
-      if (pos != -1 && (pos < newPos || newPos == -1)) {
-        newPos = pos;
-        currentToken = token;
-      }
+        if( pos != -1 && (pos < new_pos || new_pos == -1) ) {
+            new_pos = pos;
+            current_token = token;
+        }
     }
 
-    var pos = this.content.indexOf("\n", position);
-
-    if (pos != -1 && (pos < newPos || newPos == -1)) {
-      newPos = pos;
-      currentToken = "\n";
+    var pos = this.content.indexOf("\n", this.position);
+    if( pos != -1 && (pos < new_pos || new_pos == -1) ) {
+        new_pos = pos;
+        current_token = "\n";
     }
 
-    if (newPos == -1) return false;
-    position = newPos;
-    current = currentToken;
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = current_token;
     return true;
-  }
+};
 
-  public function nextToken() : Bool {
-    var newPos = -1;
-    var currentToken = "";
+/**
+    Next token (not safe)
+**/
+public function nextToken(): Bool{
+    var new_pos = -1;
+    var current_token = "";
 
-    for (token in tokens) {
-      var pos = this.content.indexOf(token, position);
+    for( token in tokens ) {
+        var pos = this.content.indexOf(token, this.position);
 
-      if (pos != -1 && (pos < newPos || newPos == -1)) {
-        newPos = pos;
-        currentToken = token;
-      }
+        if( pos != -1 && (pos < new_pos || new_pos == -1) ) {
+            new_pos = pos;
+            current_token = token;
+        }
     }
 
-    if (newPos == -1) return false;
-    position = newPos;
-    current = currentToken;
+    if( new_pos == -1 ) {
+        return false;
+    }
+
+    this.position = new_pos;
+    this.current  = current_token;
     return true;
-  }
+};
 
-  public function increment(?content : String) : StringHandle {
-    if (content == null) {
-      if (current != null) increment(current);
-      return this;
+/**
+    Increment position from the current token
+**/
+public function increment(?content: String): StringHandle{
+    if( content == null ) {
+        if( this.current != null ) {
+            this.increment(this.current);
+        }
+
+        return this;
     }
 
-    var newPos = position + content.length;
-    if (newPos > this.content.length) return this;
-    position = newPos;
-    current = content;
+    var new_pos = this.position + content.length;
+
+    if( new_pos > this.content.length ) {
+        return this;
+    }
+
+    this.position = new_pos;
+    this.current = content;
     return this;
-  }
+};
 
-  public function decrement(?content : String) : StringHandle {
-    if (content == null) {
-      if (current != null) decrement(current);
-      return this;
+/**
+    Decrement position from the current token
+**/
+public function decrement(?content: String): StringHandle{
+    if( content == null ) {
+        if( this.current != null ) {
+            this.decrement(this.current);
+        }
+
+        return this;
     }
 
-    var newPos = position - content.length;
-    if (newPos < 0) return this;
-    position = newPos;
-    current = content;
+    var new_pos = this.position - content.length;
+
+    if( new_pos < 0 ) {
+        return this;
+    }
+
+    this.position = new_pos;
+    this.current = content;
     return this;
-  }
+};
 
-  public function insert(?content : String, ?after : Bool) : StringHandle {
-    if (content == null) {
-      if (current != null) insert(current);
-      return this;
+/**
+    Insert content to the given position
+**/
+public function insert(?content: String): StringHandle{
+    if( content == null ) {
+        if( this.current != null ) {
+            this.insert(this.current);
+        }
+
+        return this;
     }
 
-    var divided;
-    if (after == null || !after) {
-      divided = divide();
-    } else {
-      divided = divide(1);
-    }
+    var divided = this.divide();
 
     this.content = divided.left + content + divided.right;
-    current = content;
+    this.current = content;
     return this;
-  }
+};
 
-  public function remove(?content : String) : StringHandle {
-    if (content == null) {
-      if (current != null) remove(current);
-      return this;
+/**
+    Remove content to the given position
+**/
+public function remove(?content: String): StringHandle{
+    if( content == null ) {
+        if( this.current != null ) {
+            this.remove(this.current);
+        }
+
+        return this;
     }
 
     var length = content.length;
-    var divided = divide();
+    var divided = this.divide();
 
-    if (divided.right.length < length) return this;
-    this.content = divided.left + divided.right.substr(length);
-    current = content;
-    return this;
-  }
-
-  private function divide(?offset: Int = 0) {
-    return {
-      left: position > 0 ? content.substr(0, position + offset) : "",
-      right: position < content.length ? content.substring(position + offset) : ""
+    if( divided.right.length < length ) {
+        return this;
     }
-  }
+
+    this.content = divided.left + divided.right.substr(length);
+    this.current = content;
+    return this;
+};
+
+/**
+    Splits the text in 2 parts
+**/
+public function divide(?offset: Int = 0){
+    return {
+        left: (this.position + offset) > 0
+            ? this.content.substr(0, this.position + offset)
+            : "",
+        right: (this.position + offset) < this.content.length
+            ? this.content.substring(this.position + offset)
+            : "",
+    };
+};
+
 }

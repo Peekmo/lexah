@@ -60,7 +60,7 @@ end
     Go to the closest token
 *--
 def closest(content: String): Bool
-    var divided = @divided();
+    var divided = @divide();
     var regex = new EReg("[^\\w][ \t]*" + content, "")
     var sub = @content.substr(@position)
 
@@ -114,7 +114,7 @@ def safeisStart(content: String): Bool
 
     var sub = @content.substr(
         @nearStart(1) ? @position : @position - 1,
-        @nearEnd(@content.length + 1) ? @content.length : @content.length + 1
+        @nearEnd(content.length + 1) ? content.length : content.length + 1
     )
 
     return regex.match(sub)
@@ -152,7 +152,7 @@ def safeis(content: String): Bool
         return @safeisStart(content)
     end
 
-    var sub = @content.substr(@position, content.length + 2)
+    var sub = @content.substr(@position-1, content.length + 2)
 
     return regex.match(sub)
 end
@@ -161,7 +161,7 @@ end
     Checks if the content to the right is...
 *--
 def at(content: String): Bool
-    var divided = @divided()
+    var divided = @divide()
 
     if divided.right.substr(0, content.length) == content then
         return true
@@ -207,8 +207,7 @@ def next(?content: String): Bool
         return false
     end
 
-    var new_pos = @content.lastIndexOf(content, @position)
-
+    var new_pos = @content.indexOf(content, @position)
     if new_pos == -1 then
         return false
     end
@@ -226,7 +225,7 @@ def prevToken(): Bool
     var current_token = ""
 
     for token in tokens do
-        var pos = @content.substr(0, @position).lastIndexOf(token))
+        var pos = @content.substr(0, @position).lastIndexOf(token)
 
         if pos != -1 and (pos > new_pos or new_pos == @position + 1) then
             new_pos = pos
@@ -251,7 +250,7 @@ def prevTokenLine(): Bool
     var current_token = ""
 
     for token in tokens do
-        var pos = @content.substr(0, @position).lastIndexOf(token))
+        var pos = @content.substr(0, @position).lastIndexOf(token)
 
         if pos != -1 and (pos > new_pos or new_pos == @position + 1) then
             new_pos = pos
@@ -259,7 +258,7 @@ def prevTokenLine(): Bool
         end
     end
 
-    var pos = @content.substr(0, @position).lastIndexOf("\n"))
+    var pos = @content.substr(0, @position).lastIndexOf("\n")
     if pos != -1 and (pos > new_pos or new_pos == @position+1) then
         new_pos = pos
         current_token = "\n"
@@ -275,15 +274,160 @@ def prevTokenLine(): Bool
 end
 
 --*
+    Gets the next token on the same line
+*--
+def nextTokenLine(): Bool
+    var new_pos = -1
+    var current_token = ""
+
+    for token in tokens do
+        var pos = @content.indexOf(token, @position)
+
+        if pos != -1 and (pos < new_pos or new_pos == -1) then
+            new_pos = pos
+            current_token = token
+        end
+    end
+
+    var pos = @content.indexOf("\n", @position)
+    if pos != -1 and (pos < new_pos or new_pos == -1) then
+        new_pos = pos
+        current_token = "\n"
+    end
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = current_token
+    return true
+end
+
+--*
+    Next token (not safe)
+*--
+def nextToken(): Bool
+    var new_pos = -1
+    var current_token = ""
+
+    for token in tokens do
+        var pos = @content.indexOf(token, @position)
+
+        if pos != -1 and (pos < new_pos or new_pos == -1) then
+            new_pos = pos
+            current_token = token
+        end
+    end
+
+    if new_pos == -1 then
+        return false
+    end
+
+    @position = new_pos
+    @current  = current_token
+    return true
+end
+
+--*
+    Increment position from the current token
+*--
+def increment(?content: String): StringHandle
+    if content == null then
+        if @current != null then
+            @increment(@current)
+        end
+
+        return this
+    end
+
+    var new_pos = @position + content.length
+
+    if new_pos > @content.length then
+        return this
+    end
+
+    @position = new_pos
+    @current = content
+    return this
+end
+
+--*
+    Decrement position from the current token
+*--
+def decrement(?content: String): StringHandle
+    if content == null then
+        if @current != null then
+            @decrement(@current)
+        end
+
+        return this
+    end
+
+    var new_pos = @position - content.length
+
+    if new_pos < 0 then
+        return this
+    end
+
+    @position = new_pos
+    @current = content
+    return this
+end
+
+--*
+    Insert content to the given position
+*--
+def insert(?content: String): StringHandle
+    if content == null then
+        if @current != null then
+            @insert(@current)
+        end
+
+        return this
+    end
+
+    var divided = @divide()
+
+    @content = divided.left + content + divided.right
+    @current = content
+    return this
+end
+
+--*
+    Remove content to the given position
+*--
+def remove(?content: String): StringHandle
+    if content == null then
+        if @current != null then
+            @remove(@current)
+        end
+
+        return this
+    end
+
+    var length = content.length
+    var divided = @divide()
+
+    if divided.right.length < length then
+        return this
+    end
+
+    @content = divided.left + divided.right.substr(length)
+    @current = content
+    return this
+end
+
+--*
     Splits the text in 2 parts
 *--
-def divided(?offset: Int = 0)
+def divide(?offset: Int = 0)
     return {
         left: (@position + offset) > 0
             ? @content.substr(0, @position + offset)
             : "",
         right: (@position + offset) < @content.length
             ? @content.substring(@position + offset)
-            : ""
+            : "",
     }
 end

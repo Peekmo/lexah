@@ -19,16 +19,16 @@ class FolderReader{
 public static function get_files(root_folder: String): Array<String>{
     var files = new  Array<String>();
 
-    if( FileSystem.exists(root_folder) ){
+    if( FileSystem.exists(root_folder) ) {
         var folders = FileSystem.readDirectory(root_folder);
 
-        for( file in folders.iterator() ){
+        for( file in folders.iterator() ) {
             var path = root_folder + "/" + file;
 
-            if( FileSystem.isDirectory(path) ){
+            if( FileSystem.isDirectory(path) ) {
                 var data = FolderReader.get_files(path);
 
-                for( i in data ){
+                for( i in data ) {
                     files.push(i);
                 }
             }else{
@@ -45,7 +45,7 @@ public static function get_files(root_folder: String): Array<String>{
     (Creates all directories if they not exists)
 
     @param path     String Path to the file
-    @param ?content String File's content
+    @param ?content String File content
 **/
 public static function create_file(path: String, ?content: String): Void{
     var parts = path.split("/");
@@ -53,7 +53,7 @@ public static function create_file(path: String, ?content: String): Void{
 
     FolderReader.create_directory(parts.join("/"));
 
-    if( content == null ){
+    if( content == null ) {
         content = "";
     }
 
@@ -61,7 +61,7 @@ public static function create_file(path: String, ?content: String): Void{
 };
 
 /**
-    Creates the given directory (and all path's directories if needed)
+    Creates the given directory (and all path directories if needed)
 
     @param path String Path to the given directory
 **/
@@ -69,10 +69,10 @@ public static function create_directory(path: String): Void{
     var parts = path.split("/");
     var done : String = null;
 
-    for( part in parts.iterator() ){
+    for( part in parts.iterator() ) {
         done = done == null ? part : done + "/" + part;
 
-        if( !FileSystem.exists(done) ){
+        if( !FileSystem.exists(done) ) {
             FileSystem.createDirectory(done);
         }
     }
@@ -81,25 +81,25 @@ public static function create_directory(path: String): Void{
 /**
     Copy all files from source to destination
 
-    @param  source      String Source's path
-    @param  destination String Destination's path
+    @param  source      String Source path
+    @param  destination String Destination path
 **/
 public static function copy_file_system(source: String, destination: String): Void{
     try {
-        if( source.endsWith("/") ){
+        if( source.endsWith("/") ) {
             source = source.substr(0, -1);
         }
 
         // File
-        if( !FileSystem.isDirectory(source) ){
+        if( !FileSystem.isDirectory(source) ) {
             FolderReader.create_file(destination, File.getContent(source));
 
         // Directory
         }else{
             var files = FileSystem.readDirectory(source);
 
-            for( file in files.iterator() ){
-                if( FileSystem.isDirectory('$source/$file') ){
+            for( file in files.iterator() ) {
+                if( FileSystem.isDirectory('$source/$file') ) {
                     FolderReader.create_directory(destination);
                 }
 

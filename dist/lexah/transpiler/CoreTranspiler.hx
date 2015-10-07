@@ -404,9 +404,8 @@ class CoreTranspiler implements TranspilerInterface {
       handle.increment();
     }
 
-    handle.insert(")");
-    handle.insert("{", true);
-    handle.increment();
+    handle.insert(") {");
+    handle.increment(") {");
   }
 
   private function checkThis(handle: StringHandle) {
