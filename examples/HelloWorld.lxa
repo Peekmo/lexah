@@ -2,7 +2,8 @@
 module examples
 
 class self
-
+@:[public]
+var test:String
 -- single line comment
 @:[public, static]
 def main()

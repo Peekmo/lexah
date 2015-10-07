@@ -258,13 +258,22 @@ class CoreTranspiler implements TranspilerInterface {
       }
       // Defines to variables and functions
       else if (handle.safeis("def")) {
-        handle.remove("def");
+        this.checkVisibility(handle, "def");
+
         handle.insert("function");
         handle.next("\n");
 
         if (this.currentType == "class") {
           handle.insert("{");
         }
+
+        handle.increment();
+      }
+      else if (handle.safeis("var")) {
+        this.checkVisibility(handle, "var");
+
+        handle.insert("var");
+        handle.next("\n");
 
         handle.increment();
       }
@@ -419,6 +428,28 @@ class CoreTranspiler implements TranspilerInterface {
         handle.remove();
         handle.insert("this.");
         handle.increment();
+      }
+  }
+
+  private function checkVisibility(handle: StringHandle, token: String) {
+      var pos = handle.position;
+      var hasVisibility = false;
+
+      handle.prev("\n");
+      while (handle.nextToken() && handle.position < pos) {
+          if (handle.is("public") || handle.is("private")) {
+              hasVisibility = true;
+          }
+
+          handle.increment();
+      }
+
+      handle.prev(token);
+      handle.remove();
+
+      if (!hasVisibility) {
+          handle.insert("public ");
+          handle.increment();
       }
   }
 }

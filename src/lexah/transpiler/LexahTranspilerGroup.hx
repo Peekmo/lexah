@@ -20,7 +20,6 @@ class LexahTranspilerGroup extends TranspilerGroup {
     var content = File.getContent(file);
 
     push(new CoreTranspiler().setName(currentModule).setPath(currentPackage));
-    push(new AccessTranspiler());
     push(new SemicolonTranspiler());
 
     for (transpiler in transpilers) {
