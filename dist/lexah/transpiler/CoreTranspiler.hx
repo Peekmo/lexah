@@ -9,6 +9,7 @@ class CoreTranspiler implements TranspilerInterface {
   var path : String = "";
   var name : String = "";
   var currentType : String = "";
+  var opened = 0;
 
   public function setIsScript(script : Bool) : CoreTranspiler {
     this.script = script;
@@ -221,6 +222,7 @@ class CoreTranspiler implements TranspilerInterface {
       else if (handle.safeis("end")) {
         handle.remove();
         handle.insert("}");
+        this.opened--;
         handle.increment();
       }
       // Module = package
@@ -268,13 +270,12 @@ class CoreTranspiler implements TranspilerInterface {
         }
 
         handle.increment();
+        this.opened++;
       }
       else if (handle.safeis("var")) {
         this.checkVisibility(handle, "var");
 
         handle.insert("var");
-        handle.next("\n");
-
         handle.increment();
       }
       // Defines to variables and functions
@@ -284,6 +285,7 @@ class CoreTranspiler implements TranspilerInterface {
         handle.increment();
         handle.insert("{");
         handle.increment();
+        this.opened++;
       }
       // Insert begin bracket after if and while
       else if (handle.safeis("if")) {
@@ -295,6 +297,7 @@ class CoreTranspiler implements TranspilerInterface {
         handle.remove();
         handle.insert("}else if");
         handle.increment();
+        this.opened--;
         consumeCondition(handle, "then");
       }
       else if (handle.safeis("while") || handle.safeis("for")) {
@@ -417,6 +420,7 @@ class CoreTranspiler implements TranspilerInterface {
 
     handle.insert(") {");
     handle.increment(") {");
+    this.opened++;
   }
 
   private function checkThis(handle: StringHandle) {
@@ -435,19 +439,22 @@ class CoreTranspiler implements TranspilerInterface {
       var pos = handle.position;
       var hasVisibility = false;
 
-      handle.prev("\n");
-      while (handle.nextToken() && handle.position < pos) {
-          if (handle.is("public") || handle.is("private")) {
-              hasVisibility = true;
+      if (this.opened == 0) {
+          handle.prev("\n");
+          while (handle.nextToken() && handle.position <= pos) {
+              if (handle.is("public") || handle.is("private")) {
+                  hasVisibility = true;
+              }
+
+              handle.increment();
           }
 
-          handle.increment();
+          handle.prev(token);
       }
 
-      handle.prev(token);
       handle.remove();
 
-      if (!hasVisibility) {
+      if (!hasVisibility && this.opened == 0) {
           handle.insert("public ");
           handle.increment();
       }
