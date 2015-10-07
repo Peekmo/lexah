@@ -23,6 +23,7 @@ end
 --*
     Reset position and text
 *--
+@:[public]
 def reset() : Void
     @position = 0
     @current = null

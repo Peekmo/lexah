@@ -21,6 +21,12 @@ def main(): Void
     self.my_method(my_array)
 
     var testx = Array<String>.new()
+
+    if tokens == null then
+        @tokens = ["\n"]
+    else
+        @tokens = tokens
+    end
 end
 
 --*

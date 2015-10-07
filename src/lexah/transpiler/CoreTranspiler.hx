@@ -109,9 +109,10 @@ class CoreTranspiler implements TranspilerInterface {
         handle.next("]");
         var finalPosition = handle.position;
         handle.position = startPosition;
+        var comas = 0;
 
         while (true) {
-          if (!handle.next(",")) {
+          if (!handle.next(",") && handle.position < finalPosition) {
             handle.next("]");
             handle.remove();
             handle.nextToken();
@@ -119,9 +120,9 @@ class CoreTranspiler implements TranspilerInterface {
           }
 
           if (handle.position > finalPosition) {
-            handle.position = finalPosition;
+            handle.position = finalPosition - comas;
             // If some "," removed
-            if (!handle.is("]")) {
+            if (comas != 0) {
               handle.prev("]");
             }
 
@@ -130,6 +131,7 @@ class CoreTranspiler implements TranspilerInterface {
             break;
           }
 
+          comas++;
           handle.remove();
         }
 
