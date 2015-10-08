@@ -34,9 +34,6 @@ class CoreTranspiler implements TranspilerInterface {
       // Inheritance & interfaces
       "<", "::",
 
-      // Anonymous functions
-      "=>",
-
       // Comments
       "--*", "*--", "--",
 
@@ -44,10 +41,7 @@ class CoreTranspiler implements TranspilerInterface {
       "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
-      "-", "require", "def", ".new", "self.", "self", "new", "end", "do", "puts", "raise", "begin", "rescue", ".each", "const", "module",
-
-      // Haxe keywords
-      "using", "inline", "typedef", "var",
+      "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
       // Expressions
       "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -56,7 +50,7 @@ class CoreTranspiler implements TranspilerInterface {
       "class", "enum", "abstract", "interface",
 
       // Modifiers
-      "private", "public", "fixed", "inline"
+      "private", "public",
     ];
   }
 
