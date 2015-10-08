@@ -3,7 +3,7 @@ package lexah.cli;
 import sys.FileSystem;
 import lexah.tools.Error;
 import lexah.tools.FolderReader;
-import lexah.transpiler.LexahTranspilerGroup;
+import lexah.transpiler.Transpiler;
 using StringTools;
 
 class TranspilerCommand
@@ -128,8 +128,8 @@ class TranspilerCommand
      */
     public function transpileFile(dir : String, file: String): String
     {
-        var group = new LexahTranspilerGroup();
-        return group.transpile(dir != null ? dir : Sys.getCwd(), file);
+        var trans = new Transpiler();
+        return trans.transpile(dir != null ? dir : Sys.getCwd(), file);
     }
 
     /**

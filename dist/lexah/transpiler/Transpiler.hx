@@ -1,8 +1,9 @@
 package lexah.transpiler;
 
 import lexah.tools.StringHandle;
+import sys.io.File;
 
-class CoreTranspiler implements TranspilerInterface {
+class Transpiler {
   public function new() {}
 
   var script : Bool = false;
@@ -11,17 +12,34 @@ class CoreTranspiler implements TranspilerInterface {
   var currentType : String = "";
   var opened = 0;
 
-  public function setIsScript(script : Bool) : CoreTranspiler {
+  public function transpile(directory : String, file : String) : String {
+    var currentPackage = StringTools.replace(file, directory, "");
+    currentPackage = StringTools.replace(currentPackage, "\\", "/");
+    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "");
+    currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "");
+    currentPackage = StringTools.replace(currentPackage, "/", ".");
+
+    if (currentPackage.charAt(0) == ".") currentPackage = currentPackage.substr(1);
+
+    var content = File.getContent(file);
+
+    this.name = currentModule;
+    this.path = currentPackage;
+
+    return this.run(new StringHandle(content, this.tokens()));
+  }
+
+  public function setIsScript(script : Bool) : Transpiler {
     this.script = script;
     return this;
   }
 
-  public function setPath(path : String) : CoreTranspiler {
+  public function setPath(path : String) : Transpiler {
     this.path = path;
     return this;
   }
 
-  public function setName(name : String) : CoreTranspiler {
+  public function setName(name : String) : Transpiler {
     this.name = name;
     return this;
   }
@@ -54,7 +72,7 @@ class CoreTranspiler implements TranspilerInterface {
     ];
   }
 
-  public function transpile(handle : StringHandle) {
+  private function run(handle : StringHandle) {
     var alreadyDefined = script;
     var isFixed = false;
     var fullyFixed = false;

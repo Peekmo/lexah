@@ -1,9 +1,0 @@
--- vim: set ft=rb:
-module lexah.transpiler
-
-require "lexah/tools/StringHandle"
-
-interface self
-
-![public] def tokens(): Array<String>
-![public] def transpile(handle: StringHandle): String
