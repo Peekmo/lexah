@@ -3,10 +3,10 @@ module lexah.tools
 
 class StringHandle
 
-@:[public] var content: String
-@:[public] var position: Int
-@:[public] var current: String
-@:[public] var tokens: Array<String>
+![public] var content: String
+![public] var position: Int
+![public] var current: String
+![public] var tokens: Array<String>
 
 def new(content: String, ?tokens: Array<String>, position: Int = 0)
     @content = content
@@ -23,7 +23,7 @@ end
 --*
     Reset position and text
 *--
-@:[public]
+![public]
 def reset() : Void
     @position = 0
     @current = null

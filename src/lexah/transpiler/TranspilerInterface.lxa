@@ -5,5 +5,5 @@ require "lexah/tools/StringHandle"
 
 interface self
 
-@:[public] def tokens(): Array<String>
-@:[public] def transpile(handle: StringHandle): String
+![public] def tokens(): Array<String>
+![public] def transpile(handle: StringHandle): String

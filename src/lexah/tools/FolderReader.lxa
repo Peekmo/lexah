@@ -13,7 +13,7 @@ class self
 
     @return Files found
 *--
-@:[public, static]
+![public, static]
 def get_files(root_folder: String): Array<String>
     var files = Array<String>.new()
 
@@ -45,7 +45,7 @@ end
     @param path     String Path to the file
     @param ?content String File content
 *--
-@:[public, static]
+![public, static]
 def create_file(path: String, ?content: String): Void
     var parts = path.split("/")
     var fileName = parts.pop()
@@ -64,7 +64,7 @@ end
 
     @param path String Path to the given directory
 *--
-@:[public, static]
+![public, static]
 def create_directory(path: String): Void
     var parts = path.split("/")
     var done : String = null
@@ -84,7 +84,7 @@ end
     @param  source      String Source path
     @param  destination String Destination path
 *--
-@:[public, static]
+![public, static]
 def copy_file_system(source: String, destination: String): Void
     begin
         if source.endsWith("/") then
