@@ -8,7 +8,7 @@ using StringTools;
 
 interface TranspilerInterface{
 
-public function tokens(): Array<String>
-public function transpile(handle: StringHandle): String
+public function tokens(): Array<String>;
+public function transpile(handle: StringHandle): String;
 
 }

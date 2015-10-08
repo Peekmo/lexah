@@ -41,7 +41,7 @@ class CoreTranspiler implements TranspilerInterface {
       "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
       // Standard keywords
-      "![", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";",
+      "![", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?",
 
       // Expressions
       "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -263,6 +263,8 @@ class CoreTranspiler implements TranspilerInterface {
 
         if (this.currentType == "class") {
           handle.insert("{");
+        } else if (this.currentType == "interface") {
+          handle.insert(";");
         }
 
         handle.increment();
@@ -351,7 +353,7 @@ class CoreTranspiler implements TranspilerInterface {
         var insert = true;
 
         handle.prevTokenLine();
-        if (handle.isOne(["=", ";", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n", "}"]) && onlyWhitespace(handle.content, handle.position + 1, pos)) {
+        if (handle.isOne(["=", ";", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n", "}", "?", ":"]) && onlyWhitespace(handle.content, handle.position + 1, pos)) {
             insert = false;
         }
 

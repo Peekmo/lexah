@@ -426,10 +426,10 @@ public function remove(?content: String): StringHandle{
 **/
 public function divide(?offset: Int = 0){
     return {
-        left: (this.position + offset) > 0;
+        left: (this.position + offset) > 0
             ? this.content.substr(0, this.position + offset)
             : "",
-        right: (this.position + offset) < this.content.length;
+        right: (this.position + offset) < this.content.length
             ? this.content.substring(this.position + offset)
             : "",
     }
