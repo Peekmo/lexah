@@ -1,0 +1,64 @@
+-- vim: set ft=rb:
+module lexah.transpiler
+
+require "lexah/tools/StringHandle"
+require "sys/io/File"
+
+class self
+
+![private] var script: Bool = false
+![private] var path: String = ""
+![private] var name: String = ""
+![private] var currentType: String = ""
+![private] var opened: Int = 0
+![private] var tokens: Array<String> = [
+    -- Line break
+    "\n",
+
+    -- Inheritance & interfaces
+    "<", "::",
+
+    -- Comments
+    "--*", "*--", "--",
+
+    -- Lexah keywords
+    "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
+
+    -- Standard keywords
+    "![", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?",
+
+    -- Expressions
+    "elsif", "if", "else", "while", "for", "then", "and", "or",
+
+    -- Types
+    "class", "enum", "abstract", "interface",
+
+    -- Modifiers
+    "private", "public",
+]
+
+--*
+    Transpile the given file from the given directory
+*--
+def transpile(directory: String, file: String): String
+    var currentPackage = StringTools.replace(file, directory, "")
+    currentPackage = StringTools.replace(currentPackage, "\\", "/")
+
+    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "")
+    currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "")
+    currentPackage = StringTools.replace(currentPackage, "/", ".")
+
+    content = File.getContent(file)
+
+    @name = currentModule
+    @path = currentPackage
+
+    return @run(StringHandle.new(content, @tokens))
+end
+
+--*
+    Process transpile
+*--
+![private] def run(handle: StringHandle): String
+
+end
