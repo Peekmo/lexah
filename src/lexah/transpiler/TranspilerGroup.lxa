@@ -1,0 +1,18 @@
+-- vim: set ft=rb:
+module lexah.transpiler
+
+require "lexah/tools/StringHandle"
+
+class self
+
+var transpilers: Array<TranspilerInterface>
+
+def new()
+    @transpilers = Array<TranspilerInterface>.new()
+end
+
+def push(transpiler: TranspilerInterface): self
+    @transpilers.push(transpiler)
+
+    return this
+end
