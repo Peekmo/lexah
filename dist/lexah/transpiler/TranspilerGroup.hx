@@ -1,16 +1,23 @@
+// vim: set ft=rb:
 package lexah.transpiler;
 
 import lexah.tools.StringHandle;
 
-class TranspilerGroup {
-  var transpilers : Array<TranspilerInterface>;
+using Lambda;
+using StringTools;
 
-  public function new() {
-    transpilers = new Array<TranspilerInterface>();
-  }
+class TranspilerGroup{
 
-  public function push(transpiler : TranspilerInterface) : TranspilerGroup {
-    transpilers.push(transpiler);
+public var transpilers: Array<TranspilerInterface>;
+
+public function new(){
+    this.transpilers = new  Array<TranspilerInterface>();
+};
+
+public function push(transpiler: TranspilerInterface): TranspilerGroup{
+    this.transpilers.push(transpiler);
+
     return this;
-  }
+};
+
 }

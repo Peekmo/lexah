@@ -11,7 +11,7 @@ def new()
     @transpilers = Array<TranspilerInterface>.new()
 end
 
-def push(transpiler: TranspilerInterface): self
+def push(transpiler: TranspilerInterface): TranspilerGroup
     @transpilers.push(transpiler)
 
     return this
