@@ -6,9 +6,9 @@ class self
 const CONSTANT = 10
 var class_attr: String
 
-@:[static]
+![static]
 var static_class_attr: String
-@:[static, public]
+![static, public]
 def main(): Void
     @class_attr = "Yep"
     @class_attr
@@ -32,7 +32,7 @@ end
 --*
   Multiline comment
 *--
-@:[static, public]
+![static, public]
 def my_method(?params: Array<String>): Bool
     @{@await()}
     for ko in params.iterator() do

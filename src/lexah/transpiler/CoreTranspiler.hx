@@ -38,7 +38,7 @@ class CoreTranspiler implements TranspilerInterface {
       "--*", "*--", "--",
 
       // Standard keywords
-      "@:[", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
+      "![", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*",
 
       // Lexah keywords
       "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
@@ -96,7 +96,7 @@ class CoreTranspiler implements TranspilerInterface {
         handle.increment();
       }
       // Informations about a functions
-      else if (handle.is("@:[")) {
+      else if (handle.is("![")) {
         handle.remove();
         var startPosition = handle.position;
         handle.increment();

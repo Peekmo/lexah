@@ -23,40 +23,40 @@ const ERROR_TYPE = "transpile_error"
     Source directory or file
     @alias s
 *--
-@:[public]
+![public]
 var src: String
 
 --*
     Destination directory or file
     @alias d
 *--
-@:[public]
+![public]
 var dest: String
 
 --*
     Execute the command when source file(s) are changed
     @alias w
 *--
-@:[public]
+![public]
 var watch: Bool
 
 --*
     Copy only lexah files to dest directory
 *--
-@:[public]
+![public]
 var lexahOnly: Bool
 
 --*
     Show this message
     @alias h
 *--
-@:[public]
+![public]
 def help() : Void
     Sys.println(@showUsage())
     Sys.exit(0)
 end
 
-@:[private]
+![private]
 def transpile() : Void
     if @src != null then
         if !FileSystem.exists(@src) then
@@ -85,7 +85,7 @@ def transpile() : Void
     end
 end
 
-@:[public]
+![public]
 def runDefault() : Void
     begin
         if @src != null then

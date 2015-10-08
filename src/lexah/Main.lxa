@@ -6,7 +6,7 @@ require "lexah/cli/Cli"
 
 class self
 
-@:[public, static]
+![public, static]
 def main()
     var args = Sys.args()
     Sys.setCwd(args.pop())

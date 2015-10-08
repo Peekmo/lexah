@@ -4,7 +4,7 @@ module examples
 class self
 
 -- single line comment
-@:[public, static]
+![public, static]
 def main()
     puts("Hello World") -- equivalent to trace()
 end
