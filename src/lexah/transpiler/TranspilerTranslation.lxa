@@ -1,4 +1,4 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module lexah.transpiler
 
 require "lexah/tools/StringHandle"
@@ -12,34 +12,34 @@ class self
 ![private] var currentType: String = ""
 ![private] var opened: Int = 0
 ![private] var tokens: Array<String> = [
-    -- Line break
+    ## Line break
     "\n",
 
-    -- Inheritance & interfaces
+    ## Inheritance & interfaces
     "<", "::",
 
-    -- Comments
-    "--*", "*--", "--",
+    ## Comments
+    "##*", "*##", "##",
 
-    -- Lexah keywords
+    ## Lexah keywords
     "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
-    -- Standard keywords
+    ## Standard keywords
     "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?", "[", "]",
 
-    -- Expressions
+    ## Expressions
     "elsif", "if", "else", "while", "for", "then", "and", "or",
 
-    -- Types
+    ## Types
     "class", "enum", "abstract", "interface",
 
-    -- Modifiers
+    ## Modifiers
     "private", "public",
 ]
 
---*
+##*
     Transpile the given file from the given directory
-*--
+*##
 def transpile(directory: String, file: String): String
     var currentPackage = StringTools.replace(file, directory, "")
     currentPackage = StringTools.replace(currentPackage, "\\", "/")
@@ -56,16 +56,16 @@ def transpile(directory: String, file: String): String
     return @run(StringHandle.new(content, @tokens))
 end
 
---*
+##*
     Process transpile
-*--
+*##
 ![private] def run(handle: StringHandle): String
     return ""
 end
 
---*
+##*
     Consume curlies (functions)
-*--
+*##
 ![private] def consume_curlies(handle: StringHandle)
     var count = 0
 
@@ -73,7 +73,7 @@ end
         if handle.is("(") then
             count++
         elsif handle.is(")") then
-            count = count - 1
+            count--
         end
 
         handle.increment();

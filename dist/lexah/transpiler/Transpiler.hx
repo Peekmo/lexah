@@ -37,7 +37,7 @@ class Transpiler {
       "<", "::",
 
       // Comments
-      "--*", "*--", "--",
+      "##*", "*##", "##",
 
       // Lexah keywords
       "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
@@ -63,11 +63,11 @@ class Transpiler {
     while (handle.nextToken()) {
       // Process comments and ignore everything in
       // them until end of line or until next match if multiline
-      if (handle.is("--*")) {
+      if (handle.is("##*")) {
         handle.remove();
         handle.insert("/**");
         while(handle.nextToken()) {
-          if (handle.is("*--")) {
+          if (handle.is("*##")) {
             handle.remove();
             handle.insert("**/");
             handle.increment();
@@ -76,7 +76,7 @@ class Transpiler {
 
           handle.increment();
         }
-      } else if (handle.is("--")) {
+      } else if (handle.is("##")) {
         handle.remove();
         handle.insert("//");
         handle.increment();

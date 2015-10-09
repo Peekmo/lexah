@@ -1,4 +1,4 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module lexah.tools
 
 class StringHandle
@@ -20,46 +20,46 @@ def new(content: String, ?tokens: Array<String>, position: Int = 0)
     @position = position
 end
 
---*
+##*
     Reset position and text
-*--
+*##
 ![public]
 def reset() : Void
     @position = 0
     @current = null
 end
 
---*
+##*
     Check if we are in the beginning of @current
-*--
+*##
 def atStart() : Bool
     return @position <= 0
 end
 
---*
+##*
     Check if we are in the end of @current
-*--
+*##
 def atEnd() : Bool
     return @position >= @content.length
 end
 
---*
+##*
     Check if we are in near the beginning of @current
-*--
+*##
 def nearStart(tolerance: Int) : Bool
     return (@position - tolerance) <= 0
 end
 
---*
+##*
     Check if we are in near the end of @current
-*--
+*##
 def nearEnd(tolerance: Int) : Bool
     return (@position + tolerance) > @content.length
 end
 
---*
+##*
     Go to the closest token
-*--
+*##
 def closest(content: String): Bool
     var divided = @divide();
     var regex = new EReg("[^\\w][ \t]*" + content, "")
@@ -79,16 +79,16 @@ def closest(content: String): Bool
     return regex.match(sub.substr(0, count))
 end
 
---*
+##*
     Checks if the current is the content
-*--
+*##
 def is(content: String): Bool
     return @current == content
 end
 
---*
+##*
     Checks if the current is in the given array
-*--
+*##
 def isOne(content: Array<String>): Bool
     var contains = false
 
@@ -99,9 +99,9 @@ def isOne(content: Array<String>): Bool
     return contains
 end
 
---*
+##*
     Token started by whitespace
-*--
+*##
 def safeisStart(content: String): Bool
     var regex = new EReg("[^\\w]" + content, "")
 
@@ -121,9 +121,9 @@ def safeisStart(content: String): Bool
     return regex.match(sub)
 end
 
---*
+##*
     Token ended by whitespace
-*--
+*##
 def safeisEnd(content: String): Bool
     var regex = new EReg(content + "[^\\w]", "")
 
@@ -139,9 +139,9 @@ def safeisEnd(content: String): Bool
     return regex.match(sub)
 end
 
---*
+##*
     Token started and ended by withespace
-*--
+*##
 def safeis(content: String): Bool
     var regex = new EReg("[^\\w]" + content + "[^\\w]", "")
 
@@ -158,9 +158,9 @@ def safeis(content: String): Bool
     return regex.match(sub)
 end
 
---*
+##*
     Checks if the content to the right is...
-*--
+*##
 def at(content: String): Bool
     var divided = @divide()
 
@@ -171,10 +171,10 @@ def at(content: String): Bool
     return false
 end
 
---*
+##*
     Get the previous given token
     Returns the previous same token as current one if content is not provided
-*--
+*##
 def prev(?content: String): Bool
     if content == null then
         if @current != null then
@@ -195,10 +195,10 @@ def prev(?content: String): Bool
     return true
 end
 
---*
+##*
     Get the next given token
     Returns the next same token as current one if content is not provided
-*--
+*##
 def next(?content: String): Bool
     if content == null then
         if @current != null then
@@ -218,9 +218,9 @@ def next(?content: String): Bool
     return true
 end
 
---*
+##*
     Gets the previous token
-*--
+*##
 def prevToken(): Bool
     var new_pos = @position + 1
     var current_token = ""
@@ -243,9 +243,9 @@ def prevToken(): Bool
     return true
 end
 
---*
+##*
     Gets the previous token on the same line
-*--
+*##
 def prevTokenLine(): Bool
     var new_pos = @position + 1
     var current_token = ""
@@ -274,9 +274,9 @@ def prevTokenLine(): Bool
     return true
 end
 
---*
+##*
     Gets the next token on the same line
-*--
+*##
 def nextTokenLine(): Bool
     var new_pos = -1
     var current_token = ""
@@ -305,9 +305,9 @@ def nextTokenLine(): Bool
     return true
 end
 
---*
+##*
     Next token (not safe)
-*--
+*##
 def nextToken(): Bool
     var new_pos = -1
     var current_token = ""
@@ -330,9 +330,9 @@ def nextToken(): Bool
     return true
 end
 
---*
+##*
     Increment position from the current token
-*--
+*##
 def increment(?content: String): StringHandle
     if content == null then
         if @current != null then
@@ -353,9 +353,9 @@ def increment(?content: String): StringHandle
     return this
 end
 
---*
+##*
     Decrement position from the current token
-*--
+*##
 def decrement(?content: String): StringHandle
     if content == null then
         if @current != null then
@@ -376,9 +376,9 @@ def decrement(?content: String): StringHandle
     return this
 end
 
---*
+##*
     Insert content to the given position
-*--
+*##
 def insert(?content: String): StringHandle
     if content == null then
         if @current != null then
@@ -395,9 +395,9 @@ def insert(?content: String): StringHandle
     return this
 end
 
---*
+##*
     Remove content to the given position
-*--
+*##
 def remove(?content: String): StringHandle
     if content == null then
         if @current != null then
@@ -419,9 +419,9 @@ def remove(?content: String): StringHandle
     return this
 end
 
---*
+##*
     Splits the text in 2 parts
-*--
+*##
 def divide(?offset: Int = 0)
     return {
         left: (@position + offset) > 0

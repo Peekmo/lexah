@@ -1,4 +1,4 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module lexah.tools
 
 require "sys/FileSystem"
@@ -6,13 +6,13 @@ require "sys/io/File"
 
 class self
 
---*
+##*
     Returns an array of all files which are in the given folder and its subfolders
 
     @param root_folder : String Root folder for the search
 
     @return Files found
-*--
+*##
 ![public, static]
 def get_files(root_folder: String): Array<String>
     var files = Array<String>.new()
@@ -38,13 +38,13 @@ def get_files(root_folder: String): Array<String>
     return files
 end
 
---*
+##*
     Creates a file to the given path, with the given content
     (Creates all directories if they not exists)
 
     @param path     String Path to the file
     @param ?content String File content
-*--
+*##
 ![public, static]
 def create_file(path: String, ?content: String): Void
     var parts = path.split("/")
@@ -59,11 +59,11 @@ def create_file(path: String, ?content: String): Void
     File.saveContent(path, content)
 end
 
---*
+##*
     Creates the given directory (and all path directories if needed)
 
     @param path String Path to the given directory
-*--
+*##
 ![public, static]
 def create_directory(path: String): Void
     var parts = path.split("/")
@@ -78,12 +78,12 @@ def create_directory(path: String): Void
     end
 end
 
---*
+##*
     Copy all files from source to destination
 
     @param  source      String Source path
     @param  destination String Destination path
-*--
+*##
 ![public, static]
 def copy_file_system(source: String, destination: String): Void
     begin
@@ -91,11 +91,11 @@ def copy_file_system(source: String, destination: String): Void
             source = source.substr(0, -1)
         end
 
-        -- File
+        ## File
         if !FileSystem.isDirectory(source) then
             self.create_file(destination, File.getContent(source))
 
-        -- Directory
+        ## Directory
         else
             var files = FileSystem.readDirectory(source)
 

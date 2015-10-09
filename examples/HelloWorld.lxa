@@ -1,10 +1,10 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module examples
 
 class self
 
--- single line comment
+## single line comment
 ![public, static]
 def main()
-    puts("Hello World") -- equivalent to trace()
+    puts("Hello World") ## equivalent to trace()
 end

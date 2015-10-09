@@ -22,7 +22,7 @@ private var tokens: Array<String> = [
     "<", "::",
 
     // Comments
-    "--*", "*--", "--",
+    "##*", "*##", "##",
 
     // Lexah keywords
     "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
@@ -76,7 +76,7 @@ private function consume_curlies(handle: StringHandle){
         if( handle.is("(") ) {
             count++;
         }else if( handle.is(")") ) {
-            count = count - 1;
+            count--
         }
 
         handle.increment();

@@ -1,11 +1,11 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module lexah.cli
 
 require "mcli/CommandLine"
 require "sys/FileSystem"
 require "lexah/tools/Error"
 
---*
+##*
      _                  _
     | |                | |
     | | ____ _   _ ____| | _
@@ -14,42 +14,42 @@ require "lexah/tools/Error"
     |_|\____|_/ \_)_||_|_| |_|
 
     Lexah 0.0.1 - https://github.com/Peekmo/lexah
-*--
+*##
 class self < CommandLine
 
 const ERROR_TYPE = "transpile_error"
 
---*
+##*
     Source directory or file
     @alias s
-*--
+*##
 ![public]
 var src: String
 
---*
+##*
     Destination directory or file
     @alias d
-*--
+*##
 ![public]
 var dest: String
 
---*
+##*
     Execute the command when source file(s) are changed
     @alias w
-*--
+*##
 ![public]
 var watch: Bool
 
---*
+##*
     Copy only lexah files to dest directory
-*--
+*##
 ![public]
 var lexahOnly: Bool
 
---*
+##*
     Show this message
     @alias h
-*--
+*##
 ![public]
 def help() : Void
     Sys.println(@showUsage())

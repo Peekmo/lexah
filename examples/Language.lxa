@@ -1,4 +1,4 @@
--- vim: set ft=rb:
+## vim: set ft=rb:
 module examples
 
 class self
@@ -29,9 +29,9 @@ def main(): Void
     end
 end
 
---*
+##*
   Multiline comment
-*--
+*##
 ![static, public]
 def my_method(?params: Array<String>): Bool
     @{@await()}
