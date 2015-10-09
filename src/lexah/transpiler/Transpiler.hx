@@ -59,7 +59,7 @@ class Transpiler {
       "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
       // Standard keywords
-      "![", "]", "@{", "}", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?",
+      "![", "]", "@{", "}", "\\", "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?",
 
       // Expressions
       "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -378,7 +378,7 @@ class Transpiler {
         handle.position = pos;
         handle.increment("\n");
         handle.nextToken();
-        if (handle.isOne(["?", ":", "=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) && onlyWhitespace(handle.content, pos + 1, handle.position - 1)) {
+        if (handle.isOne(["?", ":", "=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~", "["]) && onlyWhitespace(handle.content, pos + 1, handle.position - 1)) {
             insert = false;
         }
 
