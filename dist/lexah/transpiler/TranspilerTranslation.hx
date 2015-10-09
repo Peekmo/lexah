@@ -66,4 +66,24 @@ private function run(handle: StringHandle): String{
     return "";
 }
 
+/**
+    Consume curlies (functions)
+**/
+private function consume_curlies(handle: StringHandle){
+    var count = 0;
+
+    while( hande.nextToken() ) {
+        if( handle.is("(") ) {
+            count++;
+        }else if( handle.is(")") ) {
+            count = count - 1;
+        }
+
+        handle.increment();
+        if( count == 0 ) {
+            break;
+        }
+    }
+}
+
 }

@@ -178,7 +178,7 @@ class Transpiler {
         handle.prevTokenLine();
 
         while(true) {
-          if (!handle.isOne(["=", ":", "\n", ".", "(", "[", ";"])) {
+          if (!handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","])) {
             handle.prevTokenLine();
           } else {
             break;
