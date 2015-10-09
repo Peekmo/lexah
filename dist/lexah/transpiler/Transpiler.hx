@@ -402,27 +402,6 @@ class Transpiler {
     return handle.content;
   }
 
-  private function safeNextToken(handle : StringHandle) : Bool {
-    handle.nextToken();
-
-    if (safeCheck(handle, "def") && safeCheck(handle, "if") && safeCheck(handle, "elsif") && safeCheck(handle, "end")  &&
-        safeCheck(handle, "self")  && safeCheck(handle, "while") && safeCheck(handle, "for") && safeCheck(handle, "next") &&
-        safeCheck(handle, "do") && safeCheck(handle, "else") && safeCheck(handle, "require")) {
-      return true;
-    } else {
-      handle.increment();
-      return safeNextToken(handle);
-    }
-  }
-
-  private function safeCheck(handle : StringHandle, content : String) : Bool {
-    if (handle.is(content)) {
-      return handle.safeis(content);
-    }
-
-    return true;
-  }
-
   private function consumeCurlys(handle : StringHandle) {
     var count = 0;
 
