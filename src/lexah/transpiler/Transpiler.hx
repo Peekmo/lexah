@@ -6,7 +6,6 @@ import sys.io.File;
 class Transpiler {
   public function new() {}
 
-  var script : Bool = false;
   var path : String = "";
   var name : String = "";
   var currentType : String = "";
@@ -27,21 +26,6 @@ class Transpiler {
     this.path = currentPackage;
 
     return this.run(new StringHandle(content, this.tokens()));
-  }
-
-  public function setIsScript(script : Bool) : Transpiler {
-    this.script = script;
-    return this;
-  }
-
-  public function setPath(path : String) : Transpiler {
-    this.path = path;
-    return this;
-  }
-
-  public function setName(name : String) : Transpiler {
-    this.name = name;
-    return this;
   }
 
   public function tokens() : Array<String> {
@@ -73,7 +57,6 @@ class Transpiler {
   }
 
   private function run(handle : StringHandle) {
-    var alreadyDefined = script;
     var isFixed = false;
     var fullyFixed = false;
 
@@ -395,9 +378,7 @@ class Transpiler {
       }
     }
 
-    if (!script) {
-      handle.content = handle.content + "\n}";
-    }
+    handle.content = handle.content + "\n}";
 
     return handle.content;
   }

@@ -66,26 +66,4 @@ private function run(handle: StringHandle): String{
     return "";
 }
 
-private function safe_next_token(handle: StringHandle) Bool{
-    handle.nextToken();
-
-    if( this.safe_check(handle, "def") && this.safe_check(handle, "if") && this.safe_check(handle, "elsif")
-    && this.safe_check(handle, "end") && this.safe_check(handle, "self") && this.safe_check(handle, "while")
-    && this.safe_check(handle, "for") && this.safe_check(handle, "next") && this.safe_check(handle, "do")
-    && this.safe_check(handle, "else") && this.safe_check(handle, "require") ) {
-        return true;
-    }
-
-    handle.increment();
-    return this.safe_next_token(handle));
-}
-
-private function safe_check(handle: StringHandle, content: String): Bool{
-    if( handle.is(content)
-        return handle.safeis(content)
-    end
-
-    return true
-end
-) {
 }
