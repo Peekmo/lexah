@@ -62,3 +62,23 @@ end
 ![private] def run(handle: StringHandle): String
     return ""
 end
+
+--*
+    Consume curlies (functions)
+*--
+![private] def consume_curlies(handle: StringHandle)
+    var count = 0
+
+    while hande.nextToken() do
+        if handle.is("(") then
+            count++
+        elsif handle.is(")") then
+            count = count - 1
+        end
+
+        handle.increment();
+        if count == 0 then
+            break
+        end
+    end
+end
