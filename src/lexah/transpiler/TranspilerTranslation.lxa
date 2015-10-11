@@ -60,6 +60,194 @@ end
     Process transpile
 *##
 ![private] def run(handle: StringHandle): String
+    var is_fixed = false
+    var fully_fixed = false
+
+    while handle.nextToken do
+        ## Multiline Comment
+        if handle.is("##*") then
+            handle.remove()
+            handle.insert("/**")
+
+            while handle.nextToken() do
+                if handle.is("*##") then
+                    handle.remove()
+                    handle.insert("**/")
+                    handle.increment()
+                    break
+                end
+
+                handle.increment()
+            end
+
+        ## Single line comment
+        elsif handle.is("##") then
+            handle.remove()
+            handle.insert("//")
+            handle.increment()
+            handle.next("\n")
+            handle.increment()
+
+        ## Invoke pure haxe code
+        elsif handle.is("@{") then
+          handle.remove()
+          handle.next("}")
+          handle.remove()
+          handle.increment()
+
+        ## Constants
+        elsif handle.is("const") then
+            handle.remove()
+            handle.insert("public static inline var")
+            handle.increment()
+
+        ## Modifiers on the function/var (private, dynamic, ...)
+        elsif handle.is("![") then
+            handle.remove()
+            var startPosition = handle.position
+            handle.increment()
+
+            handle.next("]")
+            var finalPosition = handle.position
+            handle.position = startPosition
+            var comas = 0
+
+            while true do
+                if !handle.next(",") and handle.position < finalPosition then
+                    handle.next("]")
+                    handle.remove()
+                    handle.nextToken()
+                    break
+                end
+
+                if handle.position > finalPosition then
+                    handle.position = finalPosition - comas
+
+                    ## If some "," removed
+                    if comas != 0 then
+                        handle.prev("]")
+                    end
+
+                    handle.remove()
+                    handle.nextToken()
+                    break
+                end
+
+                comas++
+                handle.remove()
+            end
+
+            if handle.is("\n") then
+                handle.remove()
+                handle.insert(" ")
+                handle.increment()
+            end
+
+        ## Compiler defines
+        elsif handle.is("#") then
+            handle.next("\n")
+
+        ## this.
+        elsif handle.is("@") then
+            @check_this(handle)
+
+        ## String
+        elsif handle.is("\"") then
+            @process_string(handle)
+
+        ## Instanciate object
+        elsif handle.is(".new") then
+            handle.remove()
+            handle.prevTokenLine()
+
+            while true do
+                if !handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","]) then
+                    handle.prevTokenLine()
+                else then
+                    break
+                end
+            end
+
+            handle.increment()
+            handle.insert(" new ")
+            handle.increment()
+
+        ## trace()
+        elsif handle.safeis("puts") then
+            handle.remove()
+            handle.insert("trace")
+            handle.increment()
+
+        ## try {}
+        elsif handle.safeis("begin") then
+            handle.remove()
+            handle.insert("try {")
+            handle.increment()
+
+        ## throw
+        elsif handle.safeis("raise") then
+            handle.remove()
+            handle.insert("throw")
+            handle.increment()
+
+        ## catch() {}
+        elsif handle.safeis("rescue") then
+            handle.remove()
+            handle.insert("} catch")
+            handle.increment()
+            handle.insert("(")
+            handle.next("\n")
+            handle.insert("){")
+            handle.increment()
+
+        ## }
+        elsif handle.safeis("end") then
+            handle.remove()
+            handle.insert("}")
+            @opened--
+            handle.increment()
+
+        ## module = package
+        elsif handle.safeis("module") then
+            handle.remove()
+            handle.insert("package")
+            handle.increment()
+            handle.next("\n")
+
+        ## require = import
+        elsif handle.safeis("require") then
+            handle.remove()
+            handle.insert("import")
+            handle.increment()
+
+            var first_quote = true
+
+            while handle.nextToken() do
+                if handle.is("\"") then
+                    handle.remove()
+
+                    if (!first_quote) then
+                        handle.insert("")
+                        handle.increment()
+                        handle.increment()
+                        break
+                    end
+
+                    first_quote = false
+                elsif handle.is("/") then
+                    handle.remove()
+                    handle.insert(".")
+                end
+
+                handle.increment()
+            end
+
+        ## Otherwise, skip
+        else
+            handle.increment()
+        end
+    end
+
     return ""
 end
 
