@@ -102,7 +102,7 @@ end
         elsif handle.is("@") then
             @check_this(handle)
         end
-        
+
         handle.increment()
     end
 
@@ -122,6 +122,75 @@ end
         handle.position = position
         handle.remove()
         handle.insert("this.")
+        handle.increment()
+    end
+end
+
+##*
+    Match whitespaces
+*##
+![private] def only_whitespace(content: String, from: Int, to: Int)
+    var sub = content.substr(from, to - from)
+    var regex = ~/^\s*$/
+
+    return regex.match(sub)
+end
+
+##*
+    Process a string line
+*##
+![private] def process_string(handle: StringHandle)
+    if handle.at("\"\"\"") then
+        handle.remove("\"\"\"")
+        handle.insert("\"")
+    end
+
+    handle.increment()
+
+    while (handle.nextToken() do
+        if handle.is("#") then
+            handle.remove()
+            handle.insert("$")
+            handle.increment()
+        elsif handle.is("\"") then
+            break
+        else
+            handle.increment()
+        end
+    end
+
+    if handle.at("\"\"\"") then
+        handle.remove("\"\"\"")
+        handle.insert("\"")
+    end
+
+    handle.increment()
+end
+
+##*
+    Checks the visibility of a function or var
+*##
+![private] def check_visibility(handle: StringHandle, token: String)
+    var pos = handle.position
+    var has_visibility = false
+
+    if (this.opened == 0) then
+        handle.prev("\n")
+        while (handle.nextToken() and handle.position <= pos) do
+            if (handle.is("public") or handle.is("private")) then
+                has_visibility = true
+            end
+
+            handle.increment()
+        end
+
+        handle.prev(token)
+    end
+
+    handle.remove()
+
+    if (!has_visibility and @opened == 0) then
+        handle.insert("public ")
         handle.increment()
     end
 end
