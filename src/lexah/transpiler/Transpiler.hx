@@ -330,14 +330,14 @@ class Transpiler {
         var insert = true;
 
         handle.prevTokenLine();
-        if (handle.isOne(["=", ";", "+", "-", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n", "}", "?", ":"]) && onlyWhitespace(handle.content, handle.position + 1, pos)) {
+        if (handle.isOne(["=", ";", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n", "}", "?", ":"]) && onlyWhitespace(handle.content, handle.position + 1, pos)) {
             insert = false;
         }
 
         handle.position = pos;
         handle.increment("\n");
         handle.nextToken();
-        if (handle.isOne(["?", ":", "=", "+", "-", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) && onlyWhitespace(handle.content, pos + 1, handle.position - 1)) {
+        if (handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"]) && onlyWhitespace(handle.content, pos + 1, handle.position - 1)) {
             insert = false;
         }
 

@@ -63,6 +63,194 @@ public function transpile(directory: String, file: String): String{
     Process transpile
 **/
 private function run(handle: StringHandle): String{
+    var is_fixed = false;
+    var fully_fixed = false;
+
+    while( handle.nextToken ) {
+        // Multiline Comment
+        if( handle.is("##*") ) {
+            handle.remove();
+            handle.insert("/**");
+
+            while( handle.nextToken() ) {
+                if( handle.is("*##") ) {
+                    handle.remove();
+                    handle.insert("**/");
+                    handle.increment();
+                    break;
+                }
+
+                handle.increment();
+            }
+
+        // Single line comment
+        }else if( handle.is("##") ) {
+            handle.remove();
+            handle.insert("//");
+            handle.increment();
+            handle.next("\n");
+            handle.increment();
+
+        // Invoke pure haxe code
+        }else if( handle.is("@{") ) {
+          handle.remove();
+          handle.next("}");
+          handle.remove();
+          handle.increment();
+
+        // Constants
+        }else if( handle.is("const") ) {
+            handle.remove();
+            handle.insert("public static inline var");
+            handle.increment();
+
+        // Modifiers on the function/var (private, dynamic, ...)
+        }else if( handle.is("![") ) {
+            handle.remove();
+            var startPosition = handle.position;
+            handle.increment();
+
+            handle.next("]");
+            var finalPosition = handle.position;
+            handle.position = startPosition;
+            var comas = 0;
+
+            while( true ) {
+                if( !handle.next(",") && handle.position < finalPosition ) {
+                    handle.next("]");
+                    handle.remove();
+                    handle.nextToken();
+                    break;
+                }
+
+                if( handle.position > finalPosition ) {
+                    handle.position = finalPosition - comas;
+
+                    // If some "," removed
+                    if( comas != 0 ) {
+                        handle.prev("]");
+                    }
+
+                    handle.remove();
+                    handle.nextToken();
+                    break;
+                }
+
+                comas++;
+                handle.remove();
+            }
+
+            if( handle.is("\n") ) {
+                handle.remove();
+                handle.insert(" ");
+                handle.increment();
+            }
+
+        // Compiler defines
+        }else if( handle.is("$") ) {
+            handle.next("\n");
+
+        // this.
+        }else if( handle.is("@") ) {
+            this.check_this(handle);
+
+        // String
+        }else if( handle.is("\"") ) {
+            this.process_string(handle);
+
+        // Instanciate object
+        }else if( handle.is(".new") ) {
+            handle.remove();
+            handle.prevTokenLine();
+
+            while( true ) {
+                if( !handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","]) ) {
+                    handle.prevTokenLine();
+                }else{ then;
+                    break;
+                }
+            }
+
+            handle.increment();
+            handle.insert(" new ");
+            handle.increment();
+
+        // trace()
+        }else if( handle.safeis("puts") ) {
+            handle.remove();
+            handle.insert("trace");
+            handle.increment();
+
+        // try {}
+        }else if( handle.safeis("begin") ) {
+            handle.remove();
+            handle.insert("try {");
+            handle.increment();
+
+        // throw
+        }else if( handle.safeis("raise") ) {
+            handle.remove();
+            handle.insert("throw");
+            handle.increment();
+
+        // catch() {}
+        }else if( handle.safeis("rescue") ) {
+            handle.remove();
+            handle.insert("} catch");
+            handle.increment();
+            handle.insert("(");
+            handle.next("\n");
+            handle.insert("){");
+            handle.increment();
+
+        // }
+        }else if( handle.safeis("end") ) {
+            handle.remove();
+            handle.insert("}");
+            this.opened--;
+            handle.increment();
+
+        // module = package
+        }else if( handle.safeis("module") ) {
+            handle.remove();
+            handle.insert("package");
+            handle.increment();
+            handle.next("\n");
+
+        // require = import
+        }else if( handle.safeis("require") ) {
+            handle.remove();
+            handle.insert("import");
+            handle.increment();
+
+            var first_quote = true;
+
+            while( handle.nextToken() ) {
+                if( handle.is("\"") ) {
+                    handle.remove();
+
+                    if( (!first_quote) ) {
+                        handle.insert("");
+                        handle.increment();
+                        handle.increment();
+                        break;
+                    }
+
+                    first_quote = false;
+                }else if( handle.is("/") ) {
+                    handle.remove();
+                    handle.insert(".");
+                }
+                
+                handle.increment();
+            }
+
+        // Otherwise, skip
+        }else{
+            handle.increment();
+        }
+    }
+
     return "";
 }
 
@@ -76,7 +264,7 @@ private function consume_curlies(handle: StringHandle){
         if( handle.is("(") ) {
             count++;
         }else if( handle.is(")") ) {
-            count--
+            count--;
         }
 
         handle.increment();
@@ -105,7 +293,7 @@ private function consume_condition(handle: StringHandle, token: String){
         }else if( handle.is("@") ) {
             this.check_this(handle);
         }
-        
+
         handle.increment();
     }
 
@@ -125,6 +313,75 @@ private function check_this(handle: StringHandle){
         handle.position = position;
         handle.remove();
         handle.insert("this.");
+        handle.increment();
+    }
+}
+
+/**
+    Match whitespaces
+**/
+private function only_whitespace(content: String, from: Int, to: Int){
+    var sub = content.substr(from, to - from);
+    var regex = ~/^\s*$/
+
+    return regex.match(sub);
+}
+
+/**
+    Process a string line
+**/
+private function process_string(handle: StringHandle){
+    if( handle.at("\"\"\"") ) {
+        handle.remove("\"\"\"")
+        handle.insert("\"");
+    }
+
+    handle.increment();
+
+    while( (handle.nextToken() ) {
+        if( handle.is("$") ) {
+            handle.remove();
+            handle.insert("$");
+            handle.increment();
+        }else if( handle.is("\"") ) {
+            break;
+        }else{
+            handle.increment();
+        }
+    }
+
+    if( handle.at("\"\"\"") ) {
+        handle.remove("\"\"\"")
+        handle.insert("\"");
+    }
+
+    handle.increment();
+}
+
+/**
+    Checks the visibility of a function or var
+**/
+private function check_visibility(handle: StringHandle, token: String){
+    var pos = handle.position;
+    var has_visibility = false;
+
+    if( (this.opened == 0) ) {
+        handle.prev("\n");
+        while( (handle.nextToken() && handle.position <= pos) ) {
+            if( (handle.is("public") || handle.is("private")) ) {
+                has_visibility = true;
+            }
+
+            handle.increment();
+        }
+
+        handle.prev(token);
+    }
+
+    handle.remove();
+
+    if( (!has_visibility && this.opened == 0) ) {
+        handle.insert("public ");
         handle.increment();
     }
 }

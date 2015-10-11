@@ -238,7 +238,7 @@ end
                     handle.remove()
                     handle.insert(".")
                 end
-
+                
                 handle.increment()
             end
 
