@@ -147,31 +147,7 @@ class Transpiler {
       }
       // Step over things in strings (" ") and process multiline strings
       else if (handle.is("\"")) {
-        if (handle.at("\"\"\"")) {
-          handle.remove("\"\"\"");
-          handle.insert("\"");
-        }
-
-        handle.increment();
-
-        while (handle.nextToken()) {
-          if (handle.is("#")) {
-            handle.remove();
-            handle.insert("$");
-            handle.increment();
-          } else if (handle.is("\"")) {
-            break;
-          } else {
-            handle.increment();
-          }
-        }
-
-        if (handle.at("\"\"\"")) {
-          handle.remove("\"\"\"");
-          handle.insert("\"");
-        }
-
-        handle.increment();
+        this.processString(handle);
       }
       else if (handle.is(".new")) {
         handle.remove();
@@ -411,6 +387,8 @@ class Transpiler {
       } else if (handle.safeis("or")) {
         handle.remove();
         handle.insert("||");
+      } else if (handle.is("\"")) {
+        this.processString(handle);
       } else if (handle.is("@")) {
         checkThis(handle);
       }
@@ -464,5 +442,33 @@ class Transpiler {
     var sub = content.substr(from, to - from);
     var regex = ~/^\s*$/;
     return regex.match(sub);
+  }
+
+  private function processString(handle: StringHandle) {
+      if (handle.at("\"\"\"")) {
+        handle.remove("\"\"\"");
+        handle.insert("\"");
+      }
+
+      handle.increment();
+
+      while (handle.nextToken()) {
+        if (handle.is("#")) {
+          handle.remove();
+          handle.insert("$");
+          handle.increment();
+        } else if (handle.is("\"")) {
+          break;
+        } else {
+          handle.increment();
+        }
+      }
+
+      if (handle.at("\"\"\"")) {
+        handle.remove("\"\"\"");
+        handle.insert("\"");
+      }
+
+      handle.increment();
   }
 }

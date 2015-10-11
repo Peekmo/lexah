@@ -82,3 +82,46 @@ end
         end
     end
 end
+
+##*
+    Consume a condition (if, elsif, while, for)
+*##
+![private] def consume_condition(handle: StringHandle, token: String)
+    handle.insert("(")
+
+    while handle.nextToken() do
+        if handle.safeis(token) then
+            handle.remove()
+            break
+        elsif handle.safeis("and") then
+            handle.remove()
+            handle.insert("&&")
+        elsif handle.safeis("or") then
+            handle.remove()
+            handle.insert("||")
+        elsif handle.is("@") then
+            @check_this(handle)
+        end
+        
+        handle.increment()
+    end
+
+    handle.insert(") {")
+    handle.increment(") {")
+    @opened++
+end
+
+##*
+    Search for "@" as "this"
+*##
+![private] def check_this(handle: StringHandle)
+    var position = handle.position
+    handle.nexToken()
+
+    if handle.position != position + 1 then
+        handle.position = position
+        handle.remove()
+        handle.insert("this.")
+        handle.increment()
+    end
+end

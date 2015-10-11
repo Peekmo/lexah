@@ -86,4 +86,47 @@ private function consume_curlies(handle: StringHandle){
     }
 }
 
+/**
+    Consume a condition (if, elsif, while, for)
+**/
+private function consume_condition(handle: StringHandle, token: String){
+    handle.insert("(");
+
+    while( handle.nextToken() ) {
+        if( handle.safeis(token) ) {
+            handle.remove();
+            break;
+        }else if( handle.safeis("and") ) {
+            handle.remove();
+            handle.insert("&&");
+        }else if( handle.safeis("or") ) {
+            handle.remove();
+            handle.insert("||");
+        }else if( handle.is("@") ) {
+            this.check_this(handle);
+        }
+        
+        handle.increment();
+    }
+
+    handle.insert(") {");
+    handle.increment(") {");
+    this.opened++;
+}
+
+/**
+    Search for "@" as "this"
+**/
+private function check_this(handle: StringHandle){
+    var position = handle.position;
+    handle.nexToken();
+
+    if( handle.position != position + 1 ) {
+        handle.position = position;
+        handle.remove();
+        handle.insert("this.");
+        handle.increment();
+    }
+}
+
 }
