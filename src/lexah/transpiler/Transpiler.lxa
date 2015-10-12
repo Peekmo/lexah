@@ -25,7 +25,8 @@ class self
     "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     ## Standard keywords
-    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".", ";", "?", "[", "]",
+    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
+    ";", "?", "[", "]",
 
     ## Expressions
     "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -47,10 +48,13 @@ end
 def transpile(directory: String, file: String): String
     var currentPackage = StringTools.replace(file, directory, "")
     currentPackage = StringTools.replace(currentPackage, "\\", "/")
-
     var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "")
     currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "")
     currentPackage = StringTools.replace(currentPackage, "/", ".")
+
+    if currentPackage.charAt(0) == "." then
+        currentPackage = currentPackage.substr(1)
+    end
 
     var content = File.getContent(file)
 
@@ -231,7 +235,7 @@ end
                     handle.remove()
 
                     if (!first_quote) then
-                        handle.insert("")
+                        handle.insert(";")
                         handle.increment()
                         handle.increment()
                         break
@@ -256,7 +260,7 @@ end
             if (@currentType == "class") then
                 handle.insert("{")
             elsif (@currentType == "interface") then
-                handle.insert("")
+                handle.insert(";")
             end
 
             handle.increment()
@@ -288,7 +292,7 @@ end
 
         ## Loops
         elsif handle.safeis("while") or handle.safeis("for") then
-            handle.increment
+            handle.increment()
             @consume_condition(handle, "do")
 
         ## next = continue
@@ -376,7 +380,9 @@ end
         end
     end
 
-    return ""
+    handle.content = handle.content + "\n}"
+
+    return handle.content
 end
 
 ##*
@@ -415,6 +421,8 @@ end
         elsif handle.safeis("or") then
             handle.remove()
             handle.insert("||")
+        elsif handle.is("\"") then
+            @process_string(handle)
         elsif handle.is("@") then
             @check_this(handle)
         end
