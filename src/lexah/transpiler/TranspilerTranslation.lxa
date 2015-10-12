@@ -37,6 +37,10 @@ class self
     "private", "public",
 ]
 
+def new()
+
+end
+
 ##*
     Transpile the given file from the given directory
 *##
@@ -48,7 +52,7 @@ def transpile(directory: String, file: String): String
     currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "")
     currentPackage = StringTools.replace(currentPackage, "/", ".")
 
-    content = File.getContent(file)
+    var content = File.getContent(file)
 
     @name = currentModule
     @path = currentPackage
@@ -63,7 +67,7 @@ end
     var is_fixed = false
     var fully_fixed = false
 
-    while handle.nextToken do
+    while handle.nextToken() do
         ## Multiline Comment
         if handle.is("##*") then
             handle.remove()
@@ -163,7 +167,7 @@ end
             while true do
                 if !handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","]) then
                     handle.prevTokenLine()
-                else then
+                else
                     break
                 end
             end
@@ -238,9 +242,133 @@ end
                     handle.remove()
                     handle.insert(".")
                 end
-                
+
                 handle.increment()
             end
+
+        ## Function
+        elsif handle.safeis("def") then
+            @check_visibility(handle, "def")
+
+            handle.insert("function")
+            handle.next("\n")
+
+            if (@currentType == "class") then
+                handle.insert("{")
+            elsif (@currentType == "interface") then
+                handle.insert("")
+            end
+
+            handle.increment()
+            @opened++
+
+        ## Variable
+        elsif handle.safeis("var") then
+            @check_visibility(handle, "var")
+
+            handle.insert("var")
+            handle.increment()
+
+        ## Anonymous
+        elsif handle.safeis("do") then
+            handle.remove()
+            handle.insert("function")
+            handle.increment()
+            handle.insert("{")
+            handle.increment()
+            @opened++
+
+        ## elsif
+        elsif handle.safeis("elsif") then
+            handle.remove()
+            handle.insert("}else if")
+            handle.increment()
+            @opened--
+            @consume_condition(handle, "then")
+
+        ## Loops
+        elsif handle.safeis("while") or handle.safeis("for") then
+            handle.increment
+            @consume_condition(handle, "do")
+
+        ## next = continue
+        elsif handle.safeis("next") then
+            handle.remove()
+            handle.insert("continue")
+            handle.increment()
+
+        ## Condition "if"
+        elsif handle.safeis("if") then
+            handle.increment()
+            @consume_condition(handle, "then")
+
+        ## Condition "else"
+        elsif handle.safeis("else") then
+            handle.insert("}")
+            handle.increment()
+            handle.increment("else")
+            handle.insert("{")
+            handle.increment()
+
+        ## [abstract] class/interface/enum
+        elsif handle.safeis("class") or handle.safeis("interface") or handle.safeis("enum") then
+          @currentType = handle.current
+          handle.remove()
+          handle.insert("using Lambda;\nusing StringTools;\n\n").increment()
+          handle.insert(@currentType)
+
+          handle.increment()
+
+          while handle.nextToken() do
+            if (handle.is("self")) then
+              handle.remove()
+              handle.insert(name)
+            elsif handle.safeis("<") then
+              handle.remove()
+              handle.insert("extends")
+            elsif handle.safeis("::") then
+              handle.remove()
+              handle.insert("implements")
+            elsif handle.is("\n") then
+              handle.insert("{")
+              break
+            end
+
+            handle.increment()
+          end
+
+        ## Statics
+        elsif handle.safeisStart("self.") then
+            handle.remove()
+            handle.insert(@name + ".")
+            handle.increment()
+
+        ## Line break
+        elsif handle.is("\n") then
+            var pos = handle.position
+            var insert = true
+
+            handle.prevTokenLine()
+            if handle.isOne(["=", ";", "*", ".", "/", "," , "|", "&", "{", "(", "[", "^", "%", "~", "\n", "}", "?", ":"])
+            and @only_whitespace(handle.content, handle.position + 1, pos) then
+                insert = false
+            end
+
+            handle.position = pos
+            handle.increment("\n")
+            handle.nextToken()
+            if handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"])
+            and @only_whitespace(handle.content, pos + 1, handle.position - 1) then
+                insert = false
+            end
+
+            handle.prev("\n")
+            if insert then
+                handle.insert(";")
+                handle.increment()
+            end
+
+            handle.increment()
 
         ## Otherwise, skip
         else
@@ -257,7 +385,7 @@ end
 ![private] def consume_curlies(handle: StringHandle)
     var count = 0
 
-    while hande.nextToken() do
+    while handle.nextToken() do
         if handle.is("(") then
             count++
         elsif handle.is(")") then
@@ -304,7 +432,7 @@ end
 *##
 ![private] def check_this(handle: StringHandle)
     var position = handle.position
-    handle.nexToken()
+    handle.nextToken()
 
     if handle.position != position + 1 then
         handle.position = position
@@ -319,7 +447,7 @@ end
 *##
 ![private] def only_whitespace(content: String, from: Int, to: Int)
     var sub = content.substr(from, to - from)
-    var regex = ~/^\s*$/
+    var regex = EReg.new("^\\s*$", "i")
 
     return regex.match(sub)
 end
@@ -335,16 +463,16 @@ end
 
     handle.increment()
 
-    while (handle.nextToken() do
-        if handle.is("#") then
-            handle.remove()
-            handle.insert("$")
-            handle.increment()
-        elsif handle.is("\"") then
+    while handle.nextToken() do
+        if handle.is("\"") and
+        (handle.content.charAt(handle.position -1) != "\\" or
+            (handle.content.charAt(handle.position -1) == "\\" and
+            handle.content.charAt(handle.position -2) == "\\"))
+        then
             break
-        else
-            handle.increment()
         end
+
+        handle.increment()
     end
 
     if handle.at("\"\"\"") then

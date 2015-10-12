@@ -457,7 +457,10 @@ class Transpiler {
           handle.remove();
           handle.insert("$");
           handle.increment();
-        } else if (handle.is("\"")) {
+        } else if (handle.is("\"") &&
+          (handle.content.charAt(handle.position -1) != "\\" ||
+          (handle.content.charAt(handle.position -1) == "\\" &&
+          handle.content.charAt(handle.position -2) == "\\"))) {
           break;
         } else {
           handle.increment();
