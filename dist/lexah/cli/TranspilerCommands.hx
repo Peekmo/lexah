@@ -8,7 +8,7 @@ import lexah.transpiler.Transpiler;
 using Lambda;
 using StringTools;
 
-class TranspilerCommand{
+class TranspilerCommands{
 /**
  * @var files
  *
@@ -26,7 +26,7 @@ public var response : String;
 public function new(src: String, ?dest: String){
     this.src = src;
     this.dest = dest;
-    this.files = new  Map<String, Int>();
+    this.files = Map<String, new  Int>();
 }
 
 /**

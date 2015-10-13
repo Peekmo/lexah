@@ -1,0 +1,154 @@
+module lexah.cli
+
+require "sys/FileSystem"
+require "lexah/tools/Error"
+require "lexah/tools/FolderReader"
+require "lexah/transpiler/Transpiler"
+
+class self
+##*
+ * @var files
+ *
+ * Size of the files (file_size) for files
+ *##
+![private] var files : Map<String, Int>
+![private] var dest: String
+![private] var src : String
+var response : String
+
+##*
+ * @param String src   Source file or directory
+ * @param String ?dest Destination file or directory (optional)
+*##
+def new(src: String, ?dest: String)
+    @src = src
+    @dest = dest
+    @files = Map<String, Int>.new()
+end
+
+##*
+ * Transpile a file or a whole directory
+ *
+ * @param lexahOnly Bool Must only copy to the dest directory, raxe files
+ *
+ * @return Bool transpilation has been done or not
+*##
+def transpile(lexahOnly: Bool) : Bool
+    var src = @src
+    var dest = @dest
+    var dir = src
+
+    ## Transpile one file
+    if !FileSystem.isDirectory(@src) then
+        var oldFileSize : Int = @files.get(@src)
+        var currentSize : Int = FileSystem.stat(@src).size
+
+        if oldFileSize == null || oldFileSize != currentSize then
+            var result = transpileFile(dest, src)
+
+            if dest == null then
+                @response = result
+            else
+                FolderReader.create_file(dest, result)
+            end
+
+            @files.set(@src, currentSize)
+            return true
+        end
+
+        return false
+    ## Transpile a whole folder
+    else
+        var files = FolderReader.get_files(src)
+        var hasTranspile : Bool = false
+
+        ## To have the same pattern between src and dest (avoid src/ and dist instead of dist/)
+        if src.endsWith("/") then
+            src = src.substr(0, src.length - 1)
+        end
+
+        if dest == null then
+            dest = src
+        elsif dest.endsWith("/") then
+            dest = dest.substr(0, dest.length - 1)
+        end
+
+        var currentFiles = new Map<String, Int>()
+        for file in files.iterator() do
+            var oldFileSize : Int = @files.get(file)
+            var currentSize : Int = FileSystem.stat(file).size
+
+            if oldFileSize != currentSize && (!lexahOnly || isLexahFile(file)) then
+                var newPath = @getDestinationFile(file, src, dest)
+
+                ## If it's a lexah file, we transpile it
+                if isLexahFile(file) then
+                    var result = transpileFile(dir, file)
+                    FolderReader.create_file(newPath, result)
+                    @files.set(file, currentSize)
+
+                ## If it's not a lexah file, we just copy/past it to the new folder
+                else
+                    FolderReader.copy_file_system(file, newPath)
+                end
+
+                @files.set(file, currentSize)
+                hasTranspile = true
+            end
+
+            currentFiles.set(file, currentSize)
+        end
+
+        for key in @files.keys() do
+            if currentFiles.get(key) == null then
+                @files.remove(key)
+                FileSystem.deleteFile(@getDestinationFile(key, src, dest))
+            end
+        end
+
+        return hasTranspile
+    end
+
+    return false
+end
+
+##*
+ * Transpile one file
+ *
+ * @param String file Transpile a file and returns its content
+ *
+ * @return String content
+*##
+def transpileFile(dir : String, file: String): String
+    var trans = Transpiler.new()
+    return trans.transpile(dir != null ? dir : Sys.getCwd(), file)
+end
+
+##*
+ * Checks if the given file is a raxefile
+*##
+def isLexahFile(filename: String): Bool
+    return filename.endsWith(".lxa")
+end
+
+##*
+ * Get the path the destination file
+ *
+ * @param String file Path to the file
+ * @param String src  Source directory
+ * @param String dest Destination directory
+ *
+ * @return String destination file path
+*##
+def getDestinationFile(file: String, src: String, dest: String) : String
+    var parts : Array<String> = file.split('/')
+    var fileName : String = parts.pop()
+
+    var newPath = parts.join("/") + "/" + fileName.replace(".lxa", ".hx")
+
+    if (dest != null) then
+        newPath = newPath.replace(src, dest)
+    end
+
+    return newPath
+end

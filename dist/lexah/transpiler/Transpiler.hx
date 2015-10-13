@@ -29,7 +29,7 @@ private var tokens: Array<String> = [
 
     // Standard keywords
     "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
-    ";", "?", "[",
+    ";", "?", "[", "<", ">",
 
     // Expressions
     "elsif", "if", "else", "while", "for", "then", "and", "or",
@@ -172,7 +172,11 @@ private function run(handle: StringHandle): String{
             handle.prevTokenLine();
 
             while( true ) {
-                if( !handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","]) ) {
+                if( handle.is(">") ) {
+                    handle.prev("<");
+                    handle.decrement();
+                    handle.prevTokenLine();
+                }else if( !handle.isOne(["=", ":", "\n", ".", "(", "[", ";", ","]) ) {
                     handle.prevTokenLine();
                 }else{
                     break;
