@@ -28,34 +28,34 @@ private var tokens: Array<String> = [
     "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     // Standard keywords
-    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
+    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "this.", ":", "*", "{", "}", ".",
     ";", "?", "[",
 
-    // Expressions
-    "elsif", "if", "else", "while", "for", "then", "and", "or",
+    ## Expressions
+    "}else if(", "if", "else", "while", "for", "then", "and", "or",
 
-    // Types
+    ## Types
     "class", "enum", "abstract", "interface",
 
-    // Modifiers
+    ## Modifiers
     "private", "public",
-];
+]
 
-public function new(){
+def new()
 
-}
+end
 
-/**
+##*
     Transpile the given file from the given directory
-**/
-public function transpile(directory: String, file: String): String{
-    var currentPackage = StringTools.replace(file, directory, "");
-    currentPackage = StringTools.replace(currentPackage, "\\", "/");
-    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "");
-    currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "");
-    currentPackage = StringTools.replace(currentPackage, "/", ".");
+*##
+def transpile(directory: String, file: String): String
+    var currentPackage = StringTools.replace(file, directory, "")
+    currentPackage = StringTools.replace(currentPackage, "\\", "/")
+    var currentModule = StringTools.replace(currentPackage.substr(currentPackage.lastIndexOf("/") + 1), ".lxa", "")
+    currentPackage = StringTools.replace(currentPackage, currentPackage.substr(currentPackage.lastIndexOf("/")), "")
+    currentPackage = StringTools.replace(currentPackage, "/", ".")
 
-    if( currentPackage.charAt(0) == "." ) {
+    if currentPackage.charAt(0) == "." ) {
         currentPackage = currentPackage.substr(1);
     }
 
