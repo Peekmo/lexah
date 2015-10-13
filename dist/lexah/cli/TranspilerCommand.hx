@@ -1,3 +1,4 @@
+// vim: set ft=rb:
 package lexah.cli;
 
 import sys.FileSystem;
@@ -76,7 +77,7 @@ public function transpile(lexahOnly: Bool) : Bool{
             dest = dest.substr(0, dest.length - 1);
         }
 
-        var currentFiles = new Map<String, Int>();
+        var currentFiles = new  Map<String, Int>();
         for( file in files.iterator() ) {
             var oldFileSize : Int = this.files.get(file);
             var currentSize : Int = FileSystem.stat(file).size;

@@ -74,7 +74,7 @@ def transpile(lexahOnly: Bool) : Bool
             dest = dest.substr(0, dest.length - 1)
         end
 
-        var currentFiles = new Map<String, Int>()
+        var currentFiles = Map<String, Int>.new()
         for file in files.iterator() do
             var oldFileSize : Int = @files.get(file)
             var currentSize : Int = FileSystem.stat(file).size
