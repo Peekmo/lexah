@@ -1,3 +1,4 @@
+## vim: set ft=rb:
 module lexah.cli
 
 require "sys/FileSystem"
