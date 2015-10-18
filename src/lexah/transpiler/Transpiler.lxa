@@ -283,6 +283,7 @@ end
             handle.remove()
             handle.insert("function")
             handle.increment()
+            @consume_curlies(handle)
             handle.insert("{")
             handle.increment()
             @opened++

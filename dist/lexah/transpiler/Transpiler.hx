@@ -286,6 +286,7 @@ private function run(handle: StringHandle): String{
             handle.remove();
             handle.insert("function");
             handle.increment();
+            this.consume_curlies(handle);
             handle.insert("{");
             handle.increment();
             this.opened++;
