@@ -25,7 +25,7 @@ private var tokens: Array<String> = [
     "##*", "*##", "##",
 
     // Lexah keywords
-    "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
+    "-", "require", "def", ".new(", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     // Standard keywords
     "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
@@ -167,8 +167,9 @@ private function run(handle: StringHandle): String{
             this.process_string(handle);
 
         // Instanciate object
-        }else if( handle.is(".new") ) {
+        }else if( handle.is(".new(") ) {
             handle.remove();
+            handle.insert("(");
             handle.prevTokenLine();
 
             while( true ) {

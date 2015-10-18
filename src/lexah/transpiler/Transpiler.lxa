@@ -22,7 +22,7 @@ class self
     "##*", "*##", "##",
 
     ## Lexah keywords
-    "-", "require", "def", ".new", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
+    "-", "require", "def", ".new(", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     ## Standard keywords
     "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
@@ -164,8 +164,9 @@ end
             @process_string(handle)
 
         ## Instanciate object
-        elsif handle.is(".new") then
+        elsif handle.is(".new(") then
             handle.remove()
+            handle.insert("(")
             handle.prevTokenLine()
 
             while true do
