@@ -223,7 +223,7 @@ private function run(handle: StringHandle): String{
             handle.increment();
 
         // module = package
-        }else if( handle.safeis("module") ) {
+        }else if( handle.is_word("module") ) {
             handle.remove();
             handle.insert("package");
             handle.increment();

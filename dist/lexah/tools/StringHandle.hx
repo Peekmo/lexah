@@ -161,6 +161,27 @@ public function safeis(content: String): Bool{
 }
 
 /**
+    Checks for the exact word
+**/
+public function is_word(content: String): Bool{
+    var regex = new EReg("[\\s]" + content + "[\\s]", "");
+    var offsetStart = 1;
+    var offsetEnd = 2;
+
+    if( this.nearStart(1) ) {
+        offsetStart = 0;
+    }
+
+    if( this.nearEnd(content.length + 2) ) {
+        offsetEnd = 1;
+    }
+
+    var sub = this.content.substr(this.position-offsetStart, content.length + offsetEnd);
+
+    return regex.match(sub);
+}
+
+/**
     Checks if the content to the right is...
 **/
 public function at(content: String): Bool{

@@ -220,7 +220,7 @@ end
             handle.increment()
 
         ## module = package
-        elsif handle.safeis("module") then
+        elsif handle.is_word("module") then
             handle.remove()
             handle.insert("package")
             handle.increment()

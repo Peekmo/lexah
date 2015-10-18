@@ -159,6 +159,27 @@ def safeis(content: String): Bool
 end
 
 ##*
+    Checks for the exact word
+*##
+def is_word(content: String): Bool
+    var regex = new EReg("[\\s]" + content + "[\\s]", "")
+    var offsetStart = 1
+    var offsetEnd = 2
+
+    if @nearStart(1) then
+        offsetStart = 0
+    end
+
+    if @nearEnd(content.length + 2) then
+        offsetEnd = 1
+    end
+
+    var sub = @content.substr(@position-offsetStart, content.length + offsetEnd)
+
+    return regex.match(sub)
+end
+
+##*
     Checks if the content to the right is...
 *##
 def at(content: String): Bool
