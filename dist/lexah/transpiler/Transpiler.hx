@@ -370,7 +370,7 @@ private function run(handle: StringHandle): String{
             handle.position = pos;
             handle.increment("\n");
             handle.nextToken();
-            if( handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"])
+            if( handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~", "}"])
             && this.only_whitespace(handle.content, pos + 1, handle.position - 1) ) {
                 insert = false;
             }

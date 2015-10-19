@@ -367,7 +367,7 @@ end
             handle.position = pos
             handle.increment("\n")
             handle.nextToken()
-            if handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~"])
+            if handle.isOne(["?", ":", "=", "*", ".", "/", "," , "|", "&", ")", "]", "^", "%", "~", "}"])
             and @only_whitespace(handle.content, pos + 1, handle.position - 1) then
                 insert = false
             end
