@@ -16,7 +16,7 @@ class self
     "\n",
 
     ## Pur haxe code
-    "<%", "%>",
+    "{{", "}}",
 
     ## Inheritance & interfaces
     "<", "::",
@@ -100,9 +100,9 @@ end
             handle.increment()
 
         ## Invoke pure haxe code
-        elsif handle.is("<%") then
+        elsif handle.is("{{") then
           handle.remove()
-          handle.next("%>")
+          handle.next("}}")
           handle.remove()
 
         ## Constants

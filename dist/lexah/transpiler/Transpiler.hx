@@ -19,7 +19,7 @@ private var tokens: Array<String> = [
     "\n",
 
     // Pur haxe code
-    "<%", "%>",
+    "{{", "}}",
 
     // Inheritance & interfaces
     "<", "::",
@@ -103,9 +103,9 @@ private function run(handle: StringHandle): String{
             handle.increment();
 
         // Invoke pure haxe code
-        }else if( handle.is("<%") ) {
+        }else if( handle.is("{{") ) {
           handle.remove();
-          handle.next("%>");
+          handle.next("}}");
           handle.remove();
 
         // Constants
