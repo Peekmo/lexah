@@ -18,6 +18,9 @@ private var tokens: Array<String> = [
     // Line break
     "\n",
 
+    // Pur haxe code
+    "<%", "%>",
+
     // Inheritance & interfaces
     "<", "::",
 
@@ -28,7 +31,7 @@ private var tokens: Array<String> = [
     "-", "require", "def", ".new(", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     // Standard keywords
-    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
+    "![", "]", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
     ";", "?", "[", "<", ">",
 
     // Expressions
@@ -100,11 +103,10 @@ private function run(handle: StringHandle): String{
             handle.increment();
 
         // Invoke pure haxe code
-        }else if( handle.is("@{") ) {
+        }else if( handle.is("<%") ) {
           handle.remove();
-          handle.next("}");
+          handle.next("%>");
           handle.remove();
-          handle.increment();
 
         // Constants
         }else if( handle.is("const") ) {

@@ -34,7 +34,7 @@ end
 *##
 ![static, public]
 def my_method(?params: Array<String>): Bool
-    @{@await()}
+    <% @await() %> ## Pur haxe code
     for ko in params.iterator() do
         if ko == "hello" or ko == "test" then
             puts(ko)

@@ -15,6 +15,9 @@ class self
     ## Line break
     "\n",
 
+    ## Pur haxe code
+    "<%", "%>",
+
     ## Inheritance & interfaces
     "<", "::",
 
@@ -25,7 +28,7 @@ class self
     "-", "require", "def", ".new(", "self.", "self", "end", "do", "puts", "raise", "begin", "rescue", "const", "module", "var",
 
     ## Standard keywords
-    "![", "]", "@{", "}", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
+    "![", "]", "\\",  "\"", "\\\"", "(", ")", "/", "=", "#", ",", "@:", "@", ":", "*", "{", "}", ".",
     ";", "?", "[", "<", ">",
 
     ## Expressions
@@ -97,11 +100,10 @@ end
             handle.increment()
 
         ## Invoke pure haxe code
-        elsif handle.is("@{") then
+        elsif handle.is("<%") then
           handle.remove()
-          handle.next("}")
+          handle.next("%>")
           handle.remove()
-          handle.increment()
 
         ## Constants
         elsif handle.is("const") then
