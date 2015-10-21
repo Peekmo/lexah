@@ -1,13 +1,13 @@
 // vim: set ft=rb:
 package lexah.cli;
+using Lambda;
+using StringTools;
+
 
 import sys.FileSystem;
 import lexah.tools.Error;
 import lexah.tools.FolderReader;
 import lexah.transpiler.Transpiler;
-
-using Lambda;
-using StringTools;
 
 class TranspilerCommand{
 /**

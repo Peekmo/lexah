@@ -1,8 +1,8 @@
 // vim: set ft=rb:
 package lexah.tools;
-
 using Lambda;
 using StringTools;
+
 
 class StringHandle{
 

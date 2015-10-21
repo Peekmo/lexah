@@ -1,11 +1,11 @@
 // vim: set ft=rb:
 package lexah;
+using Lambda;
+using StringTools;
+
 
 import mcli.Dispatch;
 import lexah.cli.Cli;
-
-using Lambda;
-using StringTools;
 
 class Main{
 

@@ -228,6 +228,10 @@ end
             handle.insert("package")
             handle.increment()
             handle.next("\n")
+            handle.insert(";")
+            handle.increment()
+            handle.increment()
+            handle.insert("using Lambda;\nusing StringTools;\n\n").increment()
 
         ## require = import
         elsif handle.safeis("require") then
@@ -326,7 +330,6 @@ end
         elsif handle.safeis("class") or handle.safeis("interface") or handle.safeis("enum") then
           @currentType = handle.current
           handle.remove()
-          handle.insert("using Lambda;\nusing StringTools;\n\n").increment()
           handle.insert(@currentType)
 
           handle.increment()

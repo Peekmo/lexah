@@ -1,11 +1,11 @@
 // vim: set ft=rb:
 package lexah.transpiler;
+using Lambda;
+using StringTools;
+
 
 import lexah.tools.StringHandle;
 import sys.io.File;
-
-using Lambda;
-using StringTools;
 
 class Transpiler{
 
@@ -231,6 +231,10 @@ private function run(handle: StringHandle): String{
             handle.insert("package");
             handle.increment();
             handle.next("\n");
+            handle.insert(";");
+            handle.increment();
+            handle.increment();
+            handle.insert("using Lambda;\nusing StringTools;\n\n").increment();
 
         // require = import
         }else if( handle.safeis("require") ) {
@@ -329,7 +333,6 @@ private function run(handle: StringHandle): String{
         }else if( handle.safeis("class") || handle.safeis("interface") || handle.safeis("enum") ) {
           this.currentType = handle.current;
           handle.remove();
-          handle.insert("using Lambda;\nusing StringTools;\n\n").increment();
           handle.insert(this.currentType);
 
           handle.increment();
