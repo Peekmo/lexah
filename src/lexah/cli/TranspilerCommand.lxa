@@ -44,7 +44,7 @@ def transpile(lexahOnly: Bool) : Bool
         var oldFileSize : Int = @files.get(@src)
         var currentSize : Int = FileSystem.stat(@src).size
 
-        if oldFileSize == null || oldFileSize != currentSize then
+        if oldFileSize != currentSize then
             var result = transpileFile(dest, src)
 
             if dest == null then

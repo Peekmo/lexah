@@ -47,7 +47,7 @@ public function transpile(lexahOnly: Bool) : Bool{
         var oldFileSize : Int = this.files.get(this.src);
         var currentSize : Int = FileSystem.stat(this.src).size;
 
-        if( oldFileSize == null || oldFileSize != currentSize ) {
+        if( oldFileSize != currentSize ) {
             var result = transpileFile(dest, src);
 
             if( dest == null ) {
