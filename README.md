@@ -1,6 +1,6 @@
 # Lexah
 
-No more maintained. See [ruhax](https://github.com/Peekmo/ruhax) project instead.
+No more maintained. See [ruhax](https://github.com/Peekmo/ruhax) project instead, which parse real ruby code.
 
 Fork from [raxe](https://github.com/nondev/raxe) because I'm a bit frustrated by the choices
 of the maintainer
